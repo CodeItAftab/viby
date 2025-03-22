@@ -8,6 +8,7 @@ const connectSocket = (userId) => {
       query: {
         userId,
       },
+      withCredentials: true,
     });
   }
 

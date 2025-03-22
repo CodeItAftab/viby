@@ -35,8 +35,8 @@ const getMessages = TryCatch(async (req, res, next) => {
       freindId,
       "name avatar bio email createdAt"
     ).lean();
-    friend.avatar = friend.avatar.url;
-    friend.joined = friend.createdAt;
+    friend.avatar = friend?.avatar?.url;
+    friend.joined = friend?.createdAt;
     friend.createdAt = undefined;
     friend.isOnline = users.has(freindId.toString());
   }

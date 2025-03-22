@@ -270,7 +270,7 @@ const SocketProvider = ({ children }) => {
       socket?.off(TYPING);
       socket?.off(STOP_TYPING);
     };
-  }, [userId, dispatch, selectedChatId, chats, friends, socket]);
+  }, [userId, dispatch, selectedChatId, chats, friends, socket, setSocket]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
