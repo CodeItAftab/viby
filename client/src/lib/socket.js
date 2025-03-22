@@ -4,9 +4,7 @@ let socket;
 
 const connectSocket = (userId) => {
   if (!socket) {
-    // socket = io("https://16kbbt38-3000.inc1.devtunnels.ms", {
-    socket = io("http://localhost:3000", {
-      // socket = io("https://vibychat.onrender.com", {
+    socket = io("https://viby.onrender.com", {
       query: {
         userId,
       },
