@@ -1,0 +1,439 @@
+//  setTypingStatus: (state, action) => {
+//     state.chats = state.chats.map((chat) => {
+//       if (chat._id === action.payload.chatId) {
+//         chat.isTyping = action.payload.isTyping;
+//         if (chat.isGroup) {
+//           chat.typingUser = action.payload.userId;
+//         }
+//       }
+//       return chat;
+//     });
+
+//     if (state.selectedChatId === action.payload.chatId) {
+//       state.selectedUser.isTyping = action.payload.isTyping;
+//     }
+//   },
+
+//   const TextMessage = ({ message }) => {
+//   // const { socket } = useSocket();
+//   // const dispatch = useDispatch();
+
+//   return (
+//     <li
+//       className={`text-message bg-green--400 flex gap-3 h-fit w-fit max-h-[900px] max-w-[95%] shrink-0   ${
+//         message?.isSender && "self-end"
+//       }`}
+//       id={message?.isFirstUnread ? "first_unread" : ""}
+//     >
+//       <div className="flex flex-col">
+//         {/* <div className="text-wrap max-height-[600px] text-center "> */}
+//         <div className="text-wrap max-height-[600px] text-center w-full lg:max-w-[600px] max-w-[400px]">
+//           <p
+//             className={`message   flex justify-center text-base leading-normal tracking-wider break-all  px-3 py-1 rounded-full   max-h-[600px]  w-full lg:max-w-[600px] max-w-[400px] text-wrap   ${
+//               message?.isSender
+//                 ? "bg-[#4853ee] text-white   order-2"
+//                 : `bg-slate-200/60  text-black `
+//             }`}
+//           >
+//             {message.content}
+//           </p>
+//         </div>
+//         <div
+//           className={
+//             "flex gap-1 w-full h-5 items-center justify-end" +
+//             (message?.isSender ? "" : "justify-start")
+//           }
+//         >
+//           {message.isSender && (
+//             <span className="flex items-center justify-center">
+//               {message.state === "read" && (
+//                 <Checks
+//                   size={16}
+//                   color="#1976d2"
+//                   className="self-end text-slate-500"
+//                 />
+//               )}
+//               {message.state === "delivered" && (
+//                 <Checks size={16} className="self-end text-slate-500" />
+//               )}
+//               {message.state === "sent" && (
+//                 <Check size={16} className="self-end text-slate-500" />
+//               )}
+//             </span>
+//           )}
+//           <span className={`time-stamp  text-[9px] leading-none`}>
+//             {new Date(message.createdAt).toLocaleString("en-US", {
+//               hour: "numeric",
+//               minute: "numeric",
+//               hour12: true,
+//             })}
+//           </span>
+//         </div>
+//       </div>
+//       {/* </li> */}
+//     </li>
+//   );
+// };
+
+//jkljl
+
+// <div className="flex justify-end bg-white py-0">
+//       <div className="relative max-w-xs rounded-lg py-1 px-2 bg-[#3961e6]">
+//         {/* Message content */}
+//         <div className="f">
+//           <span className="text-white text-base font-normal whitespace-pre-wrap">
+//             {message?.content}
+//           </span>
+//           <div className="float-right relative top-[2px] flex items-center justify-end space-x-1 mt-2 ml-3 box-border">
+//             <span className="text-[#667781] text-[10px] leading-none">
+//               00:53
+//             </span>
+//             <svg
+//               viewBox="0 0 16 15"
+//               width="16"
+//               height="11"
+//               className="text-[#4fc3f7]"
+//             >
+//               <path
+//                 fill="currentColor"
+//                 d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"
+//               />
+//             </svg>
+//           </div>
+//         </div>
+
+//         {/* Triangle shape for the message bubble */}
+//         <div className="absolute bottom-0 right-[-8px] w-4 h-4 overflow-hidden">
+//           <div className="absolute rotate-45 rounded-t-[-10px] bg-[#3961e6] w-4 h-4 transform translate-x-[-2px] translate-y-[2px]"></div>
+//         </div>
+//       </div>
+//     </div>
+const ImageMessage = ({ message }) => {
+  // const { selectedUser } = useSelector((state) => state.chat);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+  return (
+    <>
+      <li className={`text-message   flex flex-col rounded-sm shrink-0 `}>
+        <div
+          className={`image-box  rounded-sm shrink-0 p-1 flex flex-col gap-2   max-w-72 ${
+            message?.isSender ? "self-end" : "self-start"
+          }  `}
+        >
+          {message.attachments.map((attachment, index) => (
+            <img
+              key={index}
+              src={attachment?.url || attachment?.preview}
+              alt="preview"
+              className={`max-w-60 min-w-48 max-h-60 object-cover  rounded-sm cursor-pointer border-[2px]  ${
+                message?.isSender
+                  ? "border-[#3582ff] self-end "
+                  : "border-slate-200/60 "
+              }`}
+              onClick={handleOpen}
+            />
+          ))}
+
+          {message.content && (
+            <div className="flex items-start gap-1 flex-col rounded-[8px] text-wrap max-height-[600px] min-w-fit lg:max-w-[600px] max-w-[400px]">
+              <p
+                className={`message   flex    font-normal text-sm leading-normal tracking-wider break-all  py-1   px-2   min-h-6 max-h-[600px] shadow-sm drop-shadow-sm   w-fit lg:max-w-[600px] max-w-[400px] text-wrap   ${
+                  message?.isSender
+                    ? "bg-[#2d54f0] self-end text-white rounded--[20px_20px_8px_20px] rounded-md  order-2"
+                    : "bg-slate-200/60 text-black rounded--[20px_20px_20px_8px] rounded-md"
+                }`}
+              >
+                {message.content}
+              </p>
+            </div>
+          )}
+
+          {/* <img
+            src={
+              message?.attachments[0]?.url || message?.attachments[0]?.preview
+            }
+            alt="preview"
+            className="h-36 w-36 object-cover grid-flow-col rounded-sm cursor-pointer "
+            onClick={handleOpen}
+          /> */}
+        </div>
+        <div
+          className={
+            "flex gap-1 w-full h-5 items-center justify-end" +
+            (message?.isSender ? "" : "justify-start")
+          }
+        >
+          {message.isSender && (
+            <span className="flex items-center justify-center">
+              {message.state === "read" && (
+                <Checks
+                  size={16}
+                  color="#1976d2"
+                  className="self-end text-slate-500"
+                />
+              )}
+              {message.state === "delivered" && (
+                <Checks size={16} className="self-end text-slate-500" />
+              )}
+              {message.state === "sent" && (
+                <Check size={16} className="self-end text-slate-500" />
+              )}
+            </span>
+          )}
+          <span className={`time-stamp  text-[9px] leading-none`}>
+            {new Date(message.createdAt).toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            })}
+          </span>
+        </div>
+      </li>
+      <Dialog
+        className="rounded-none outline-none"
+        open={open}
+        onOpenChange={handleOpen}
+      >
+        {/* <DialogTrigger className="rounded-none flex items-center justify-center"></DialogTrigger> */}
+        <DialogContent className="w-[70%] h-[620px] p-0 shadow-none border-none   rounded-none sm:rounded-none outline-none  max-w-full ">
+          <DialogHeader className={"hidden"}>
+            <DialogTitle>Image Preview</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+
+          <div className="h-full w-full overflow-hidden flex flex-col bg-black">
+            {/* <div className="h-11 w-full ">
+              <div className="h-11 box-border flex items-center justify-between px-2 w-full  pr-4">
+                <div className="h-full flex items-center gap-2 ">
+                  <div className="h-8 w-8">
+                    <AvatarWithoutStatus />
+                  </div>
+                  <span className="text-lg  font-medium text-slate-600">
+                    {message?.isSender ? "You" : selectedUser.name}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 cursor-pointer">
+                  <Download size={18} className="" /> Download
+                </div>
+              </div>
+            </div> */}
+            <div className="h-[calc(100%-44px)] w-full bg-black  overflow-hidden px-4 flex items-center justify-center">
+              <img
+                className="h-[90%]  object-contain"
+                src={
+                  message?.attachments[0]?.url ||
+                  message?.attachments[0]?.preview
+                }
+                alt="image"
+              />
+            </div>
+            <div className="w-full text-center mb-4">
+              <Button variant="outline">
+                <DownloadCloudIcon size={18} />
+                Download
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+// const ImageMessage = ({ message }) => {
+//   // const { selectedUser } = useSelector((state) => state.chat);
+//   const [open, setOpen] = useState(false);
+//   const handleOpen = () => {
+//     setOpen(!open);
+//   };
+//   return (
+//     <>
+//       <li className={`text-message   flex flex-col rounded-sm shrink-0 `}>
+//         <div
+//           className={`image-box  rounded-sm shrink-0 p-1 flex flex-col gap-2   max-w-72 ${
+//             message?.isSender ? "self-end" : "self-start"
+//           }  `}
+//         >
+//           {message.attachments.map((attachment, index) => (
+//             <img
+//               key={index}
+//               src={attachment?.url || attachment?.preview}
+//               alt="preview"
+//               className={`max-w-60 min-w-48 max-h-60 object-cover  rounded-sm cursor-pointer border-[2px]  ${
+//                 message?.isSender
+//                   ? "border-[#3582ff] self-end "
+//                   : "border-slate-200/60 "
+//               }`}
+//               onClick={handleOpen}
+//             />
+//           ))}
+
+//           {message.content && (
+//             <div className="flex items-start gap-1 flex-col rounded-[8px] text-wrap max-height-[600px] min-w-fit lg:max-w-[600px] max-w-[400px]">
+//               <p
+//                 className={`message   flex    font-normal text-sm leading-normal tracking-wider break-all  py-1   px-2   min-h-6 max-h-[600px] shadow-sm drop-shadow-sm   w-fit lg:max-w-[600px] max-w-[400px] text-wrap   ${
+//                   message?.isSender
+//                     ? "bg-[#2d54f0] self-end text-white rounded--[20px_20px_8px_20px] rounded-md  order-2"
+//                     : "bg-slate-200/60 text-black rounded--[20px_20px_20px_8px] rounded-md"
+//                 }`}
+//               >
+//                 {message.content}
+//               </p>
+//             </div>
+//           )}
+
+//           {/* <img
+//             src={
+//               message?.attachments[0]?.url || message?.attachments[0]?.preview
+//             }
+//             alt="preview"
+//             className="h-36 w-36 object-cover grid-flow-col rounded-sm cursor-pointer "
+//             onClick={handleOpen}
+//           /> */}
+//         </div>
+//         <div
+//           className={
+//             "flex gap-1 w-full h-5 items-center justify-end" +
+//             (message?.isSender ? "" : "justify-start")
+//           }
+//         >
+//           {message.isSender && (
+//             <span className="flex items-center justify-center">
+//               {message.state === "read" && (
+//                 <Checks
+//                   size={16}
+//                   color="#1976d2"
+//                   className="self-end text-slate-500"
+//                 />
+//               )}
+//               {message.state === "delivered" && (
+//                 <Checks size={16} className="self-end text-slate-500" />
+//               )}
+//               {message.state === "sent" && (
+//                 <Check size={16} className="self-end text-slate-500" />
+//               )}
+//             </span>
+//           )}
+//           <span className={`time-stamp  text-[9px] leading-none`}>
+//             {new Date(message.createdAt).toLocaleString("en-US", {
+//               hour: "numeric",
+//               minute: "numeric",
+//               hour12: true,
+//             })}
+//           </span>
+//         </div>
+//       </li>
+//       <Dialog
+//         className="rounded-none outline-none"
+//         open={open}
+//         onOpenChange={handleOpen}
+//       >
+//         {/* <DialogTrigger className="rounded-none flex items-center justify-center"></DialogTrigger> */}
+//         <DialogContent className="w-[70%] h-[620px] p-0 shadow-none border-none   rounded-none sm:rounded-none outline-none  max-w-full ">
+//           <DialogHeader className={"hidden"}>
+//             <DialogTitle>Image Preview</DialogTitle>
+//             <DialogDescription></DialogDescription>
+//           </DialogHeader>
+
+//           <div className="h-full w-full overflow-hidden flex flex-col bg-black">
+//             {/* <div className="h-11 w-full ">
+//               <div className="h-11 box-border flex items-center justify-between px-2 w-full  pr-4">
+//                 <div className="h-full flex items-center gap-2 ">
+//                   <div className="h-8 w-8">
+//                     <AvatarWithoutStatus />
+//                   </div>
+//                   <span className="text-lg  font-medium text-slate-600">
+//                     {message?.isSender ? "You" : selectedUser.name}
+//                   </span>
+//                 </div>
+//                 <div className="flex items-center gap-2 cursor-pointer">
+//                   <Download size={18} className="" /> Download
+//                 </div>
+//               </div>
+//             </div> */}
+//             <div className="h-[calc(100%-44px)] w-full bg-black  overflow-hidden px-4 flex items-center justify-center">
+//               <img
+//                 className="h-[90%]  object-contain"
+//                 src={
+//                   message?.attachments[0]?.url ||
+//                   message?.attachments[0]?.preview
+//                 }
+//                 alt="image"
+//               />
+//             </div>
+//             <div className="w-full text-center mb-4">
+//               <Button variant="outline">
+//                 <DownloadCloudIcon size={18} />
+//                 Download
+//               </Button>
+//             </div>
+//           </div>
+//         </DialogContent>
+//       </Dialog>
+//     </>
+//   );
+// };
+
+// const ImageMessage = ({ message }) => {
+//   return (
+//     <div
+//       className={`${
+//         message?.sameSender
+//           ? "rounded-sm"
+//           : message?.isSender
+//           ? "chat-bubble-right mt-3 rounded-l-md rounded-b-md"
+//           : "chat-bubble-left mt-3 rounded-r-md rounded-b-md"
+//       } ${
+//         message?.isSender && "self-end"
+//       }  relative  h-fit w-fit max-w-[320px]  shrink-0   bg-slate-200 `}
+//     >
+//       <div className="image-container overflow-hidden h-full w-full rounded-md border-4 shadow-[2px] border-slate-200/60 inset-2 ] ">
+//         {message.attachments.map((attachment, index) => (
+//           <img
+//             key={index}
+//             src={attachment?.url || attachment?.preview}
+//             alt="preview"
+//             // className={`max-w-60 min-w-48 max-h-60 object-cover  rounded-sm cursor-pointer  ${
+//             //   message?.isSender
+//             //     ? "border-[#3582ff] self-end "
+//             //     : "border-slate-200/60 "
+//             // }`}
+//             // onClick={handleOpen}
+//           />
+//         ))}
+//       </div>
+//       <span
+//         className={`absolute inline-block bottom-1 right-0 h-5 w-[72px] shrink-0 bg-rded-200`}
+//       >
+//         <div className="h-full  w-full bg-red flex items-center justify-center pr-1 gap-1 flex-shrink-0">
+//           <span className="text-[10px] text-white relative ">
+//             {new Date(message?.createdAt).toLocaleString("en-US", {
+//               hour: "numeric",
+//               minute: "numeric",
+//               hour12: true,
+//             })}
+//           </span>
+//           {message?.isSender && (
+//             <span className="flex items-center justify-center">
+//               {message?.state === "read" && (
+//                 <Checks
+//                   size={16}
+//                   color="#1976d2"
+//                   className="self-end text-slate-500"
+//                 />
+//               )}
+//               {message?.state === "delivered" && (
+//                 <Checks size={16} className="self-end text-slate-500" />
+//               )}
+//               {message?.state === "sent" && (
+//                 <Check size={16} className="self-end text-slate-500" />
+//               )}
+//             </span>
+//           )}
+//         </div>
+//       </span>
+//     </div>
+//   );
+// };
