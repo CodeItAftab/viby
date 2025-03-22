@@ -25,7 +25,7 @@ const initSocket = (server) => {
   io = new Server(server, {
     cors: {
       origin: "https://viby-alpha.vercel.app",
-      withCredentials: true,
+      credentials: true,
     },
   });
 
