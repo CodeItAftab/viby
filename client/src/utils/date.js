@@ -1,6 +1,10 @@
 import { differenceInDays, format, isToday, isYesterday } from "date-fns";
 
 export const getFromattedDate = (date) => {
+  if (!date) {
+    console.log("date error", date);
+    return "";
+  }
   if (isToday(new Date(date))) {
     return "Today";
   } else if (isYesterday(new Date(date))) {
@@ -15,7 +19,10 @@ export const getFromattedDate = (date) => {
 };
 
 export const getFromattedTime = (date) => {
-  if (!date) return "";
+  if (!date) {
+    console.log("date error", date);
+    return "";
+  }
   if (isToday(date)) {
     return new Date(date).toLocaleString("en-US", {
       hour: "numeric",

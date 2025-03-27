@@ -37,7 +37,9 @@ export function ChatListItem({ chat }) {
     <div
       // className="h-16 w-full bg-slate-100 cursor-pointer  flex items-center lg:p-2 px-2 py-0 shrink-0 rounded-lg "
       // className="h-16 w-full bg-white cursor-pointer  flex items-center lg:p-2 px-2 py-0 shrink-0 rounded-lg "
-      className="h-16 w-full bg-white cursor-pointer  flex items-center lg:p-2 px-4 py-0 shrink-0 rounded-lg lg:shadow-sm"
+      className={`h-16 w-full ${
+        chatId === chat?._id ? "bg-blue-200" : "bg-white"
+      }  cursor-pointer  flex items-center lg:p-2 px-4 py-0 shrink-0 rounded-lg lg:shadow-sm`}
       onClick={async () => {
         if (chatId !== chat?._id) {
           navigate(`/chats/${chat?._id}`);
