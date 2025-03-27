@@ -88,7 +88,7 @@ const SocketProvider = ({ children }) => {
     }
 
     socket?.on("disconnect", () => {
-      console.log("Disconnected from server");
+      // console.log("Disconnected from server");
       disconnectSocket();
       setSocket(null);
     });
@@ -109,7 +109,7 @@ const SocketProvider = ({ children }) => {
     });
 
     socket?.on(FRIEND_REQUEST_ACCEPTED, (data) => {
-      console.log(data);
+      // console.log(data);
       dispatch(removeSentRequest({ requestId: data.requestId }));
       dispatch(makeRequestAccepted(data));
     });
@@ -160,7 +160,7 @@ const SocketProvider = ({ children }) => {
           (friend) => friend.chatId === data.message.chatId
         );
         const friend = friends[friendIndex];
-        console.log(friend);
+        // console.log(friend);
         dispatch(
           pushChat({
             _id: friend.chatId,
@@ -191,7 +191,7 @@ const SocketProvider = ({ children }) => {
     });
 
     socket?.on(FRIEND_CAME_ONLINE, (data) => {
-      console.log(data);
+      // console.log(data);
       dispatch(setFriendOnlineStatus({ chatId: data.chatId, isOnline: true }));
       dispatch(setSelectedUserOnlineStatus(true));
       dispatch(
@@ -203,7 +203,7 @@ const SocketProvider = ({ children }) => {
     });
 
     socket?.on(FRIEND_WENT_OFFLINE, (data) => {
-      console.log("offline event", data);
+      // console.log("offline event", data);
       dispatch(setFriendOnlineStatus({ chatId: data.chatId, isOnline: false }));
       dispatch(setSelectedUserOnlineStatus(false));
       dispatch(
@@ -215,24 +215,24 @@ const SocketProvider = ({ children }) => {
     });
 
     socket?.on(MESSAGE_DELIVERED, (data) => {
-      console.log(data);
+      // console.log(data);
       console.log("Message Delivered");
       dispatch(makeMessagesDelivered({ chatId: data.chatId }));
     });
 
     socket?.on(READ_MESSAGE, (data) => {
-      console.log("Read Message socket event", data);
+      // console.log("Read Message socket event", data);
       // dispatch(ReadMessage({ chatId: data.chatId }));
       dispatch(readMessage({ chatId: data.chatId }));
     });
 
     socket?.on(FRIEND_READ_MESSAGE, (data) => {
-      console.log("readmessageof", data);
+      // console.log("readmessageof", data);
       dispatch(makeMessageRead({ chatId: data.chatId }));
     });
 
     socket?.on(TYPING, (data) => {
-      console.log("Typing event", data);
+      // console.log("Typing event", data);
       // console.log("handleTypingStatus:", handleTypingStatus);
 
       dispatch(
@@ -245,7 +245,7 @@ const SocketProvider = ({ children }) => {
     });
 
     socket?.on(STOP_TYPING, (data) => {
-      console.log("Typing stop event", data);
+      // console.log("Typing stop event", data);
       dispatch(
         setTypingStatus({
           chatId: data.chatId,

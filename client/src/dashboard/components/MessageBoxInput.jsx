@@ -60,7 +60,7 @@ function MessageBoxInput({ message, setMessage, setAttachments, attachments }) {
   const handleKeyPress = () => {
     if (!isTyping) {
       setIsTyping(true);
-      console.log("started Typing");
+      // console.log("started Typing");
       socket?.emit(TYPING, { chatId: selectedChatId, userId });
     }
 
@@ -69,7 +69,7 @@ function MessageBoxInput({ message, setMessage, setAttachments, attachments }) {
 
     typingTimeout.current = setTimeout(() => {
       setIsTyping(false);
-      console.log("stopped Typing");
+      // console.log("stopped Typing");
       socket?.emit(STOP_TYPING, { chatId: selectedChatId, userId });
     }, 2000); // Stops typing after 2 seconds of inactivity
   };
@@ -117,7 +117,7 @@ function MessageBoxInput({ message, setMessage, setAttachments, attachments }) {
             }}
             onKeyDown={handleKeyPress}
             onBlur={() => {
-              console.log("stopped Typing blurred");
+              // console.log("stopped Typing blurred");
               setIsTyping(false);
               clearTimeout(typingTimeout.current);
               socket?.emit(STOP_TYPING, { chatId: selectedChatId, userId });

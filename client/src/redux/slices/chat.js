@@ -357,7 +357,7 @@ export const ReadMessage = createAsyncThunk(
         `/chat/read/${getState().chat.selectedChatId}`
       );
       if (response.success) {
-        console.log(response.message);
+        // console.log(response.message);
       }
     } catch (error) {
       console.log(error);
@@ -369,7 +369,7 @@ export const HandleNewMessage = createAsyncThunk(
   "chat/handleNewMessage",
   (message, { dispatch, getState }) => {
     const { socket } = useSocket();
-    console.log(socket);
+    // console.log(socket);
     const { selectedChatId } = getState().chat;
     if (selectedChatId === message.chatId) {
       dispatch(slice.actions.pushNewMessage(message));
@@ -398,7 +398,7 @@ export const HandleReadEvent = createAsyncThunk(
   (_, { getState }) => {
     const { socket } = useSocket();
     const chatId = getState().chat.selectedChatId;
-    console.log("Read Event", chatId);
+    // console.log("Read Event", chatId);
     if (chatId) {
       socket?.emit(READ_MESSAGE, { chatId });
     }
@@ -413,7 +413,7 @@ export const CreateGroup = createAsyncThunk(
       const response = await postMultiPartRequest("/chat/create-group", data);
       if (response.success) {
         // dispatch(slice.actions.pushChat(response.chat));
-        console.log(response);
+        // console.log(response);
         return response;
       }
     } catch (error) {

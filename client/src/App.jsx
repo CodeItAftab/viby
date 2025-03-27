@@ -21,7 +21,6 @@ const Search = lazy(() => import("./dashboard/pages/Search"));
 const Settings = lazy(() => import("./dashboard/pages/Settings"));
 const FirstProfileUpdate = lazy(() => import("./Profile/FirstProfileUpdate"));
 
-// import loading from "./lotties/loading_plane.lottie";
 import {
   BufferingScreen,
   MainLoadingScreen,

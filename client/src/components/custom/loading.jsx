@@ -1,5 +1,5 @@
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import planeLoader from "../../lotties/loading_plane.lottie";
+import loaderElement from "../../lotties/globe.lottie";
 import buffering from "../../lotties/buffering.lottie";
 import { memo } from "react";
 
@@ -7,7 +7,7 @@ const MainLoadingScreen = memo(() => {
   return (
     <div className="h-full w-full flex items-center justify-center">
       <div className="h-[400px]">
-        <DotLottieReact src={planeLoader} loop autoplay />
+        <DotLottieReact src={loaderElement} loop autoplay />
       </div>
     </div>
   );

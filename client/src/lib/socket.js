@@ -4,7 +4,7 @@ let socket;
 
 const connectSocket = (userId) => {
   if (!socket) {
-    socket = io("https://viby.onrender.com", {
+    socket = io("http://localhost:3000", {
       query: {
         userId,
       },

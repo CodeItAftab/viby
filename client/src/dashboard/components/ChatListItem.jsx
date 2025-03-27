@@ -25,6 +25,7 @@ import {
   SendFriendRequest,
 } from "@/redux/slices/request";
 import AvatarWithoutStatus from "./AvatarWithoutStatus";
+import { getFromattedTime } from "@/utils/date";
 
 export function ChatListItem({ chat }) {
   // const { selectedChatId } = useSelector((state) => state.chat);
@@ -39,19 +40,7 @@ export function ChatListItem({ chat }) {
       className="h-16 w-full bg-white cursor-pointer  flex items-center lg:p-2 px-4 py-0 shrink-0 rounded-lg lg:shadow-sm"
       onClick={async () => {
         if (chatId !== chat?._id) {
-          // await dispatch(FetchChatMessages(chat?._id));
-          // await dispatch(setSelectedUserId(chat?.friendId));
-          // await dispatch(setSelectedChatId(chat?._id));
-          // await dispatch(
-          //   setSelectedUser({
-          //     name: chat?.name,
-          //     isOnline: chat?.isOnline,
-          //   })
-          // );
-
           navigate(`/chats/${chat?._id}`);
-          // console.log("ChatListItem -> chat?._id", chat?._id);
-          // }
         }
       }}
     >
@@ -64,27 +53,25 @@ export function ChatListItem({ chat }) {
         </h2>
         <div className="flex items-center gap-1">
           {chat?.lastMessage?.isSender && (
-            <span className="flex items-center justify-center">
+            <span className="flex items-center pt-[2px] justify-center">
               {chat?.lastMessage?.state === "read" && (
                 <Checks
-                  size={16}
+                  size={18}
                   color="#1976d2"
                   className="self-end text-slate-500"
                 />
               )}
               {chat?.lastMessage?.state === "delivered" && (
-                <Checks size={16} className="self-end text-slate-500" />
+                <Checks size={18} className="self-end text-slate-500" />
               )}
               {chat?.lastMessage?.state === "sent" && (
-                <Check size={16} className="self-end text-slate-500" />
+                <Check size={18} className="self-end text-slate-500" />
               )}
             </span>
           )}
 
           {chat?.isTyping ? (
-            <span className="text-sm leading-none text-blue-500 font-semibold shrink-0">
-              typing...
-            </span>
+            <span className="text-sm  text-blue-600  shrink-0">typing...</span>
           ) : (
             <p className="last-message text-sm  text-slate-700 text-nowrap flex gap-1 items-center">
               {/* {faker.lorem.sentence().slice(0, 30) + "..."} */}
@@ -104,7 +91,7 @@ export function ChatListItem({ chat }) {
           )}
         </div>
       </div>
-      <div className="chat-time-container h-full w-14 flex flex-col items-center lg:justify-around lg:gap-0 justify-center gap-2 ">
+      <div className="chat-time-container h-full w-14 flex flex-col items-center lg:justify-around lg:gap-0 justify-center gap-1 ">
         <span
           className={
             "last-message-time text-[12px] leading-none text-slate-500 font-semibold shrink-0" +
@@ -112,12 +99,12 @@ export function ChatListItem({ chat }) {
           }
         >
           {/* 10:10 AM */}
-          {/* {chat &&
+          {chat &&
             chat.lastMessage !== undefined &&
-            getFromattedTime(new Date(chat?.lastMessage?.createdAt))} */}
+            getFromattedTime(new Date(chat?.lastMessage?.createdAt))}
           {/* {faker.number.int({ min: 1, max: 12 })}:
           {faker.number.int({ min: 1, max: 12 })} */}
-          {/* {new Date(chat?.lastMessage?.time)?.toLocaleTimeString()} */}
+          {/* {new Date(chat?.lastMessage?.createdAt)?.toLocaleTimeString()} */}
         </span>
         {
           <span
