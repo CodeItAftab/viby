@@ -18,7 +18,7 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: "https://viby-alpha.vercel.app",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -36,18 +36,6 @@ app.use(routes);
 const PORT = process.env.PORT || 3000;
 
 connectDB(process.env.MONGO_URI);
-
-process.on("uncaughtException", (err) => {
-  console.log(err.name, err.message);
-  console.log("UNCAUGHT EXCEPTION! 💥 Shutting down...");
-  process.exit(1);
-});
-
-process.on("unhandledRejection", (err) => {
-  console.log(err.name, err.message);
-  console.log("UNHANDLED REJECTION! 💥 Shutting down...");
-  process.exit(1);
-});
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
