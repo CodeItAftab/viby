@@ -63,7 +63,7 @@ export const LogoutUser = createAsyncThunk(
   async (_, { dispatch }) => {
     try {
       const response = await getRequest("/auth/logout");
-      if (response.success) {
+      if (response?.success) {
         window.localStorage.removeItem("reload");
         dispatch(resetUserSlice());
         dispatch(slice.actions.logout());
