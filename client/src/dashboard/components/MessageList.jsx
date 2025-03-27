@@ -1,24 +1,11 @@
-import { memo } from "react";
+import { memo, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 import MessageItem from "./MessageItem";
-
-// const formatMessages = (messages) => {
-//   const processedMessages = [];
-//   let lastDate = null;
-//   const allMessages = [...messages].reverse();
-//   allMessages.forEach((message) => {
-//     const messageDate = new Date(message?.createdAt);
-//     if (messageDate.getDate() !== lastDate) {
-//       processedMessages.push({
-//         type: "date",
-//         date: messageDate,
-//       });
-//     }
-//     processedMessages.push(message);
-//     lastDate = messageDate.getDate();
-//   });
-//   return processedMessages;
-// };
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useSocket } from "@/hooks/useSocket";
+import { markMessageReadByViewer } from "@/redux/slices/chat";
+import { READ_MESSAGE } from "@/constants/event";
 
 const formatMessages = (messages) => {
   const processedMessages = [];
@@ -54,7 +41,18 @@ const formatMessages = (messages) => {
 };
 
 function MessageList({ messages = [] }) {
-  // console.log("messageListRendered");
+  const dispatch = useDispatch();
+  const { chatId } = useParams();
+  const socket = useSocket();
+
+  const handleReadMessage = useCallback(() => {
+    dispatch(markMessageReadByViewer({ chatId }));
+    socket?.emit(READ_MESSAGE, { chatId });
+  }, [chatId, dispatch, socket]);
+
+  useEffect(() => {
+    handleReadMessage();
+  }, [handleReadMessage, socket]);
 
   return (
     <ul
@@ -69,6 +67,7 @@ function MessageList({ messages = [] }) {
     </ul>
   );
 }
+
 MessageList.propTypes = {
   messages: PropTypes.array,
 };

@@ -67,9 +67,6 @@ function CreateGroupModal() {
       name: groupName,
       avatar,
     };
-
-    console.log(data);
-
     // Dispatch create group action
     const response = await dispatch(CreateGroup(data));
     if (response.payload.success) {
@@ -121,9 +118,9 @@ function CreateGroupModal() {
             <ScrollArea className="flex flex-col gap-2 w-full h-full py-2 ">
               {friends?.map((friend) => (
                 <GroupMemberSelectItem
-                  key={friend._id}
+                  key={friend?._id}
                   user={friend}
-                  selected={selectedMembers.includes(friend._id)}
+                  selected={selectedMembers.includes(friend?._id)}
                   onSelect={handleSelectAndDeselect}
                 />
               ))}

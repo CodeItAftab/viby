@@ -2,74 +2,72 @@ const User = require("../models/user");
 const Request = require("../models/request");
 const Chat = require("../models/chat");
 const { TryCatch } = require("../utils/error");
-const chat = require("../models/chat");
 const { users } = require("../utils/socket");
 const { uploadAvatarOnCloudinary } = require("../utils/cloudinary");
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find(
+    const allUsers = await User.find(
       { _id: { $ne: req.user._id } },
       "name avatar"
     ).lean();
 
-    const new_users = await Promise.all(
-      users.map(async (user) => {
-        const chat = await Chat.findOne({
-          members: { $all: [req.user._id, user._id] },
-          isGroup: false,
+    const processed_users = [];
+
+    for (let user of allUsers) {
+      const chat = await Chat.findOne({
+        members: { $all: [req.user._id, user._id] },
+        isGroup: false,
+      });
+
+      console.log(users);
+
+      if (chat) {
+        processed_users.push({
+          ...user,
+          isFriend: true,
+          isSentRequest: false,
+          isReceivedRequest: false,
+          chatId: chat._id,
+          avatar: user?.avatar?.url,
+          isOnline: users.has(user._id.toString()),
+        });
+        console.log("chat found", chat);
+        continue;
+      }
+
+      const request = await Request.findOne({
+        $or: [
+          { sender: req.user._id, receiver: user._id },
+          { sender: user._id, receiver: req.user._id },
+        ],
+      });
+
+      if (request) {
+        const isSender = request?.sender.toString() === req.user._id.toString();
+
+        processed_users.push({
+          ...user,
+          isFriend: false,
+          isSentRequest: isSender,
+          isReceivedRequest: !isSender,
+          requestId: request._id,
+          avatar: user?.avatar?.url,
         });
 
-        if (chat) {
-          return {
-            ...user,
-            isFriend: true,
-            isSentRequest: false,
-            isReceivedRequest: false,
-            chatId: chat._id,
-            avatar: user?.avatar?.url,
-          };
-        }
+        console.log("request found", request);
+        continue;
+      }
 
-        const request = await Request.findOne({
-          $or: [
-            { sender: req.user._id, receiver: user._id },
-            { sender: user._id, receiver: req.user._id },
-          ],
-        });
-        if (request?.sender._id.toString() === req.user._id.toString()) {
-          return {
-            ...user,
-            isFriend: false,
-            isSentRequest: true,
-            isReceivedRequest: false,
-            requestId: request._id,
-            avatar: user?.avatar?.url,
-          };
-        } else if (
-          request?.receiver._id.toString() === req.user._id.toString()
-        ) {
-          return {
-            ...user,
-            isFriend: false,
-            isSentRequest: false,
-            isReceivedRequest: true,
-            requestId: request._id,
-            avatar: user?.avatar?.url,
-          };
-        } else {
-          return {
-            ...user,
-            isFriend: false,
-            isSentRequest: false,
-            isReceivedRequest: false,
-            avatar: user?.avatar?.url,
-          };
-        }
-      })
-    );
-
-    res.status(200).json({ success: true, users: new_users });
+      processed_users.push({
+        ...user,
+        isFriend: false,
+        isSentRequest: false,
+        isReceivedRequest: false,
+        avatar: user?.avatar?.url,
+      });
+    }
+    res.status(200).json({ success: true, users: processed_users });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -162,8 +160,6 @@ const uploadFCMToken = TryCatch(async (req, res, next) => {
 
 module.exports = {
   getAllUsers,
-  // getAllRequests,
-  // getAllSentRequests,
   uploadFCMToken,
   getAllFriends,
   getUser,

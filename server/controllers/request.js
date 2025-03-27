@@ -7,6 +7,7 @@ const {
 } = require("../constants/event");
 const Request = require("../models/request");
 const Chat = require("../models/chat");
+const User = require("../models/user");
 const { TryCatch, ErrorHandler } = require("../utils/error");
 const { getIO, users, getSocketId } = require("../utils/socket");
 
@@ -190,9 +191,25 @@ const acceptFriendRequest = TryCatch(async (req, res, next) => {
   const io = getIO();
   const senderSocketId = getSocketId(request.sender.toString());
 
+  const senderFriend = await User.findById(
+    request.sender,
+    "name avatar"
+  ).lean();
+
+  const receiverFriend = await User.findById(
+    request.receiver,
+    "name avatar"
+  ).lean();
+
   io.to(senderSocketId).emit(FRIEND_REQUEST_ACCEPTED, {
     requestId: requestId,
     chatId: chat._id,
+    friend: {
+      _id: receiverFriend._id,
+      name: receiverFriend.name,
+      avatar: receiverFriend?.avatar?.url,
+      isOnline: users.has(request.receiver.toString()),
+    },
   });
 
   //   Send a success response
@@ -201,6 +218,12 @@ const acceptFriendRequest = TryCatch(async (req, res, next) => {
     message: "Friend request accepted",
     requestId: requestId,
     chatId: chat._id,
+    friend: {
+      _id: senderFriend._id,
+      name: senderFriend.name,
+      avatar: senderFriend?.avatar?.url,
+      isOnline: users.has(request.sender.toString()),
+    },
   });
 });
 

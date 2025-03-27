@@ -42,9 +42,12 @@ export const slice = createSlice({
               isFriend: true,
               chatId: action.payload.chatId,
               requestId: null,
+              isOnline: action.payload?.friend?.isOnline,
+              avatar: action.payload?.friend?.avatar,
             }
           : user
       );
+      state.friends.push(action.payload?.friend);
     },
     makeNewRequest(state, action) {
       state.users = state.users.map((user) =>

@@ -59,10 +59,10 @@ export const SendFriendRequest = createAsyncThunk(
   async (receiverId, { dispatch }) => {
     try {
       const response = await postRequest("/request/send", { to: receiverId });
-      if (response.success) {
+      if (response?.success) {
         console.log(response);
-        dispatch(slice.actions.addSentRequest(response.request));
-        dispatch(makeSentRequest(response.request));
+        dispatch(slice.actions.addSentRequest(response?.request));
+        dispatch(makeSentRequest(response?.request));
       }
     } catch (error) {
       console.log(error);
@@ -75,12 +75,12 @@ export const CancelFriendRequest = createAsyncThunk(
   async (requestId, { dispatch }) => {
     try {
       const response = await postRequest(`/request/cancel/${requestId}`);
-      if (response.success) {
+      if (response?.success) {
         console.log(response);
         dispatch(
-          slice.actions.removeSentRequest({ requestId: response.requestId })
+          slice.actions.removeSentRequest({ requestId: response?.requestId })
         );
-        dispatch(unsentRequest({ requestId: response.requestId }));
+        dispatch(unsentRequest({ requestId: response?.requestId }));
       }
     } catch (error) {
       console.log(error);
@@ -93,15 +93,18 @@ export const AcceptFriendRequest = createAsyncThunk(
   async (requestId, { dispatch }) => {
     try {
       const response = await postRequest(`/request/accept/${requestId}`);
-      if (response.success) {
+      if (response?.success) {
         console.log(response);
         dispatch(
-          slice.actions.removeRequestFromList({ requestId: response.requestId })
+          slice.actions.removeRequestFromList({
+            requestId: response?.requestId,
+          })
         );
         dispatch(
           makeRequestAccepted({
-            requestId: response.requestId,
-            chatId: response.chatId,
+            requestId: response?.requestId,
+            chatId: response?.chatId,
+            friend: response?.friend,
           })
         );
       }
@@ -116,12 +119,14 @@ export const RejectFriendRequest = createAsyncThunk(
   async (requestId, { dispatch }) => {
     try {
       const response = await postRequest(`/request/reject/${requestId}`);
-      if (response.success) {
+      if (response?.success) {
         console.log(response);
         dispatch(
-          slice.actions.removeRequestFromList({ requestId: response.requestId })
+          slice.actions.removeRequestFromList({
+            requestId: response?.requestId,
+          })
         );
-        dispatch(rejectRequest({ requestId: response.requestId }));
+        dispatch(rejectRequest({ requestId: response?.requestId }));
       }
     } catch (error) {
       console.log(error);
@@ -134,9 +139,9 @@ export const FetchAllRequests = createAsyncThunk(
   async (_, { dispatch }) => {
     try {
       const response = await getRequest("/request/all/received");
-      if (response.success) {
-        dispatch(slice.actions.setRequests(response.requests));
-        // console.log("Received Requests:", response.requests);
+      if (response?.success) {
+        dispatch(slice.actions.setRequests(response?.requests));
+        // console.log("Received Requests:", response?.requests);
       }
     } catch (error) {
       console.log(error);

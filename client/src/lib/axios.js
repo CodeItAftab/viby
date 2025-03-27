@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const baseURL = "https://viby.onrender.com";
+// const baseURL = "https://viby.onrender.com";
+const baseURL = "http://localhost:3000";
 
 export const Axios = axios.create({
   baseURL,
@@ -17,7 +18,7 @@ export const getRequest = async (url) => {
     return response.data;
   } catch (error) {
     console.error(error);
-    return error.response.data;
+    return error?.response?.data;
   }
 };
 
@@ -29,7 +30,7 @@ export const postRequest = async (url, data) => {
     return response.data;
   } catch (error) {
     console.error(error);
-    return error.response.data;
+    return error?.response?.data;
   }
 };
 
@@ -45,6 +46,6 @@ export const postMultiPartRequest = async (url, data) => {
     return response.data;
   } catch (error) {
     console.error(error);
-    return error.response.data;
+    return error?.response?.data;
   }
 };

@@ -24,7 +24,8 @@ const users = new Map();
 const initSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: "https://viby-alpha.vercel.app",
+      // origin: "https://viby-alpha.vercel.app",
+      origin: "http://localhost:5173",
       credentials: true,
     },
   });
@@ -56,7 +57,7 @@ const initSocket = (server) => {
       const chatId = data.chatId;
       const chat = chats.find((chat) => chat._id.toString() === chatId);
 
-      for (const member of chat.members) {
+      for (const member of chat?.members) {
         if (member.toString() !== userId) {
           io.to(users.get(member.toString())).emit(TYPING, { chatId, userId });
         }
@@ -64,15 +65,19 @@ const initSocket = (server) => {
     });
 
     socket.on(STOP_TYPING, (data) => {
-      const chatId = data.chatId;
-      const chat = chats.find((chat) => chat._id.toString() === chatId);
-      for (const member of chat.members) {
-        if (member.toString() !== userId) {
-          io.to(users.get(member.toString())).emit(STOP_TYPING, {
-            chatId,
-            userId,
-          });
+      try {
+        const chatId = data?.chatId;
+        const chat = chats.find((chat) => chat._id.toString() === chatId);
+        for (const member of chat?.members) {
+          if (member.toString() !== userId) {
+            io.to(users.get(member.toString())).emit(STOP_TYPING, {
+              chatId,
+              userId,
+            });
+          }
         }
+      } catch (error) {
+        console.log(error);
       }
     });
   });

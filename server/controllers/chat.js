@@ -4,7 +4,7 @@ const Message = require("../models/Message");
 const User = require("../models/user");
 const { getOtherMembers } = require("../utils/helper");
 const { users, getIO } = require("../utils/socket");
-const { NEW_MESSAGE_ALERT } = require("../constants/event");
+const { NEW_MESSAGE_ALERT, MESSAGE_SENT } = require("../constants/event");
 const { getLinkPreview } = require("link-preview-js");
 const {
   uploadOnCloudinary,
@@ -13,12 +13,17 @@ const {
 // const { default: NotificationService } = require("../utils/notification");
 
 const getMessages = TryCatch(async (req, res, next) => {
-  const { chatId } = req.params;
+  const { chatId } = req?.params;
   console.log(chatId);
   const chat = await Chat.findOne({
     _id: chatId,
-    members: req.user._id,
+    members: req?.user?._id,
   });
+
+  if (!chat) {
+    throw new ErrorHandler(404, "Chat not found");
+  }
+
   const messages = await Message.find({ chatId })
     .sort({ createdAt: -1 })
     // .limit(20)
@@ -65,8 +70,6 @@ const sendMessage = TryCatch(async (req, res, next) => {
   const { chatId, content } = req.body;
   let MessageType = "text";
   let attachments = [];
-
-  console.log(req.files);
 
   if (!content && !req?.files?.attachments) {
     throw new ErrorHandler(400, "Message or attachment is required");
@@ -124,14 +127,6 @@ const sendMessage = TryCatch(async (req, res, next) => {
 
   const io = getIO();
 
-  // console.log(req.user.fcm_token);
-
-  // NotificationService.sendNotification(
-  //   req.user.fcm_token,
-  //   "TEst",
-  //   "<h1>Heading notification</h1>"
-  // );
-
   activeMembers.forEach((member) => {
     const socketId = users.get(member.toString());
     io.to(socketId).emit(NEW_MESSAGE_ALERT, {
@@ -139,10 +134,18 @@ const sendMessage = TryCatch(async (req, res, next) => {
     });
   });
 
-  res.json({
-    // chat,.
-    success: true,
+  // Notifiy the user if the message is sent
+
+  const socketId = users.get(req.user._id.toString());
+
+  io.to(socketId).emit(MESSAGE_SENT, {
     message: messageForRealTime,
+  });
+
+  res.json({
+    success: true,
+    // message: messageForRealTime,
+    message: "Message sent successfully",
   });
 
   // const message = new Message({

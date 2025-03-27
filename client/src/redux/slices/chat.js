@@ -48,7 +48,7 @@ const slice = createSlice({
     },
     setFriendOnlineStatus: (state, action) => {
       state.chats = state.chats.map((chat) => {
-        if (chat._id === action.payload.chatId) {
+        if (chat?._id === action.payload.chatId) {
           chat.isOnline = action.payload.isOnline;
         }
         return chat;
@@ -104,7 +104,7 @@ const slice = createSlice({
 
     setTypingStatus: (state, action) => {
       state.chats = state.chats.map((chat) => {
-        if (chat._id === action.payload.chatId) {
+        if (chat?._id === action.payload.chatId) {
           chat.isTyping = action.payload.isTyping;
           if (chat.isGroup) {
             chat.typingUser = action.payload.userId;
@@ -219,9 +219,8 @@ const slice = createSlice({
             chat.lastMessage.state = "read";
           }
           chat.unread = 0;
-
-          return chat;
         }
+        return chat;
       });
     },
   },
@@ -325,22 +324,24 @@ export const FetchChatMessages = createAsyncThunk(
 
 export const sendMessage = createAsyncThunk(
   "chat/sendMessage",
-  async (formData, { dispatch, getState }) => {
+  async (formData) => {
     try {
-      const chatId = getState().chat.selectedChatId;
+      // const chatId = getState().chat.selectedChatId;
       const response = await postMultiPartRequest(
         "/chat/send-message",
         formData
       );
       if (response.success) {
-        dispatch(slice.actions.pushNewMessage(response.message));
-        dispatch(
-          slice.actions.updateLastMessage({
-            chatId,
-            message: response.message,
-          })
-        );
-        console.log(response.message);
+        // dispatch(slice.actions.pushNewMessage(response.message));
+        // dispatch(
+        //   slice.actions.updateLastMessage({
+        //     chatId,
+        //     message: response.message,
+        //   })
+        // );
+        // console.log(response.message);
+      } else {
+        console.log(response);
       }
     } catch (error) {
       console.log(error);

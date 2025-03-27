@@ -9,7 +9,7 @@ function ChatList() {
   const conversations = [...chats];
   return (
     <ScrollArea className="w-full flex-grow lg:py-3">
-      <ul className="w-full lg:px-4 lg:py-2 px-3 py-1 flex flex-col items-center shrink-0">
+      <ul className="w-full lg:px-4 lg:py-2 px-3 py-1 flex flex-col gap-1 items-center shrink-0">
         {/* {chats?.map(
           (chat) =>
             chat !== null && <ChatListItem key={chat?._id} chat={chat} />

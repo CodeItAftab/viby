@@ -1,6 +1,6 @@
 import MessageList from "./MessageList";
 import MessageBoxHeader from "./MessageBoxHeader";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import MessageBoxInput from "./MessageBoxInput";
 import { IconButton } from "@mui/material";
 import { Smiley, X } from "phosphor-react";
@@ -9,15 +9,15 @@ import { Plus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   FetchChatMessages,
-  markMessageReadByViewer,
+  // markMessageReadByViewer,
   sendMessage,
   setSelectedChatId,
   undoSelectedChat,
 } from "@/redux/slices/chat";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "motion/react";
-import { useSocket } from "@/hooks/useSocket";
-import { READ_MESSAGE } from "@/constants/event";
+// import { useSocket } from "@/hooks/useSocket";
+// import { READ_MESSAGE } from "@/constants/event";
 import ChatUserInfo from "./ChatUserInfo";
 
 function MessageBox() {
@@ -27,7 +27,7 @@ function MessageBox() {
   const [showUserInfo, setShowUserInfo] = useState(false);
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
-  const socket = useSocket();
+  // const socket = useSocket();
   const { selectedChatId, messages } = useSelector((state) => state.chat);
   const { chatId } = useParams();
   const handleSubmit = async (e) => {
@@ -52,21 +52,23 @@ function MessageBox() {
     }
   };
 
-  const handleReadMessage = useCallback(() => {
-    dispatch(markMessageReadByViewer({ chatId }));
-    socket?.emit(READ_MESSAGE, { chatId });
-  }, [chatId, dispatch, socket]);
+  const navigate = useNavigate();
+
+  // const handleReadMessage = useCallback(() => {
+  //   dispatch(markMessageReadByViewer({ chatId }));
+  //   socket?.emit(READ_MESSAGE, { chatId });
+  // }, [chatId, dispatch, socket]);
 
   useEffect(() => {
-    if (!chatId) return;
+    if (!chatId) return navigate("/");
 
     dispatch(setSelectedChatId(chatId));
     dispatch(FetchChatMessages(chatId));
-    handleReadMessage();
+    // handleReadMessage();
     return () => {
       dispatch(undoSelectedChat());
     };
-  }, [dispatch, chatId, handleReadMessage]);
+  }, [dispatch, chatId, navigate]);
 
   return (
     <div className="h-full   lg:w-[calc(100%-360px)] relative  w-full flex  items-center justify-center  shrink">

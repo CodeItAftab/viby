@@ -18,6 +18,7 @@ import {
   NEW_MESSAGE_ALERT,
   TYPING,
   STOP_TYPING,
+  MESSAGE_SENT,
 } from "@/constants/event";
 
 import {
@@ -46,6 +47,7 @@ import {
   setFriendOnlineStatus,
   setSelectedUserOnlineStatus,
   setTypingStatus,
+  updateLastMessage,
   updateLastMessageForNewMessage,
 } from "@/redux/slices/chat";
 
@@ -68,24 +70,6 @@ const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   const requestNotificationPermission = async () => {
-  //     const notificationPersmission = await Notification.requestPermission();
-  //     if (notificationPersmission === "granted") {
-  //       // Generate Token
-  //       const token = await getToken(messaging, {
-  //         vapidKey: import.meta.env.FIREBASE_VAPID_KEY,
-  //       });
-  //       console.log(token);
-  //       dispatch(uploadFCMToken(token));
-  //     } else if (notificationPersmission === "denied") {
-  //       // Show Notification Denied
-  //       console.log("Notification Permission Denied.");
-  //     }
-  //   };
-  //   requestNotificationPermission();
-  // }, [dispatch]);
-
   useEffect(() => {
     document.title = "Viby Chat";
   }, []);
@@ -103,19 +87,11 @@ const SocketProvider = ({ children }) => {
       setSocket(() => connectSocket(userId));
     }
 
-    // socket?.on("connect", () => {});
-
     socket?.on("disconnect", () => {
       console.log("Disconnected from server");
       disconnectSocket();
       setSocket(null);
     });
-
-    // socket?.on(FRIEND_REQUEST_SENT, (data) => {
-    //   // console.log(data);
-    //   console.log("Friend Request Sent", data);
-    //   // dispatch(makeSentRequest(data.request));
-    // });
 
     socket?.on(NEW_FRIEND_REQUEST, (data) => {
       dispatch(addRequest(data.request));
@@ -133,21 +109,53 @@ const SocketProvider = ({ children }) => {
     });
 
     socket?.on(FRIEND_REQUEST_ACCEPTED, (data) => {
+      console.log(data);
       dispatch(removeSentRequest({ requestId: data.requestId }));
       dispatch(makeRequestAccepted(data));
     });
 
+    socket?.on(MESSAGE_SENT, (data) => {
+      const chatIndex = chats.findIndex(
+        (chat) => chat?._id === data.message.chatId
+      );
+
+      if (chatIndex === -1) {
+        const friend = friends.find(
+          (friend) => friend?.chatId === data.message.chatId
+        );
+
+        dispatch(
+          pushChat({
+            _id: friend.chatId,
+            name: friend.name,
+            friendId: friend._id,
+            isOnline: friend.isOnline,
+            lastMessage: {
+              content: data.message.content,
+              createdAt: data.message.createdAt,
+              isSender: true,
+              state: data.message.state,
+            },
+            unread: 0,
+          })
+        );
+        dispatch(pushNewMessage(data.message));
+      } else {
+        dispatch(pushNewMessage(data.message));
+        dispatch(
+          updateLastMessage({
+            chatId: data.message.chatId,
+            message: data.message,
+          })
+        );
+      }
+    });
+
     socket?.on(NEW_MESSAGE_ALERT, (data) => {
-      console.log(data);
-      console.log("New Message Alert");
-      // check if the chat is present in chats
       const chatIndex = chats.findIndex(
         (chat) => chat?.friendId === data.message.sender
       );
-      console.log(chatIndex);
-
       if (chatIndex === -1) {
-        // console.log("this work chat indesx ", chatIndex);
         const friendIndex = friends.findIndex(
           (friend) => friend.chatId === data.message.chatId
         );
@@ -159,30 +167,26 @@ const SocketProvider = ({ children }) => {
             name: friend.name,
             friendId: friend._id,
             isOnline: friend.isOnline,
-            // lastMessage: {
-            //   content: data.message.content,
-            //   createdAt: data.message.createdAt,
-            //   isSender: false,
-            //   state: data.message.state,
-            // },
-            lastMessage: undefined,
+            lastMessage: {
+              content: data.message.content,
+              createdAt: data.message.createdAt,
+              isSender: false,
+              state: data.message.state,
+            },
             unread: 0,
           })
         );
       }
-      // updateLastMessageForNewMessage
       dispatch(
         updateLastMessageForNewMessage({
           chatId: data.message.chatId,
           message: data.message,
         })
       );
-      // check if this chat is open or not
-      // if open then push message to messages and make it read
-
       if (selectedChatId === data.message.chatId) {
         dispatch(pushNewMessage(data.message));
         socket?.emit(READ_MESSAGE, { chatId: data.message.chatId });
+        dispatch(readMessage({ chatId: data.message.chatId }));
       }
     });
 
@@ -269,6 +273,7 @@ const SocketProvider = ({ children }) => {
       socket?.off(FRIEND_READ_MESSAGE);
       socket?.off(TYPING);
       socket?.off(STOP_TYPING);
+      socket?.off(MESSAGE_SENT);
     };
   }, [userId, dispatch, selectedChatId, chats, friends, socket, setSocket]);
 
