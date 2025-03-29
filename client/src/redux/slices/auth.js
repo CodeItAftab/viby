@@ -1,5 +1,5 @@
 import { getRequest, postRequest } from "@/lib/axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { resetUserSlice } from "./user";

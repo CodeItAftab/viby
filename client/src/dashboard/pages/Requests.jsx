@@ -10,16 +10,18 @@ import {
 import { useSelector } from "react-redux";
 // import { FetchAllRequests, FetchAllSentRequests } from "@/redux/slices/user";
 import SearchInput from "../components/SearchInput";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 // import { FetchAllRequests, FetchAllSentRequests } from "@/redux/slices/request";
 
 function Requests() {
   const { requests, sentRequests } = useSelector((state) => state.request);
-  // const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(FetchAllRequests());
-  //   dispatch(FetchAllSentRequests());
-  // }, [dispatch]);
+  const navigate = useNavigate();
+
+  const NavigateToSearch = () => {
+    navigate("/search");
+  };
 
   return (
     <div className="h-full w-full bg-white  shadow-sm overflow-hidden flex items-center">
@@ -50,9 +52,18 @@ function Requests() {
               })}
 
               {requests.length == 0 && (
-                <span className="text-muted-foreground mt-10 text-sm">
-                  No Request Found
-                </span>
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <span className="text-muted-foreground mt-10 text-sm">
+                    No Request Found
+                  </span>
+                  <Button
+                    variant="outline"
+                    className="w-44"
+                    onClick={NavigateToSearch}
+                  >
+                    Find Friends
+                  </Button>
+                </div>
               )}
             </ul>
           </TabsContent>
@@ -64,9 +75,18 @@ function Requests() {
               })}
 
               {sentRequests.length == 0 && (
-                <span className="text-muted-foreground mt-10 text-sm">
-                  No Request Found
-                </span>
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <span className="text-muted-foreground mt-10 text-sm">
+                    No Request Found
+                  </span>
+                  <Button
+                    variant="outline"
+                    className="w-44"
+                    onClick={NavigateToSearch}
+                  >
+                    Find Friends
+                  </Button>
+                </div>
               )}
             </ul>
           </TabsContent>

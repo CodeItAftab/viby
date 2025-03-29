@@ -26,7 +26,6 @@ import {
   MainLoadingScreen,
 } from "./components/custom/loading";
 import { Toaster } from "react-hot-toast";
-import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter(
   [
@@ -194,7 +193,6 @@ function App() {
     <div className="App">
       <RouterProvider router={router} />
       <Toaster />
-      <ToastContainer />
     </div>
   );
 }

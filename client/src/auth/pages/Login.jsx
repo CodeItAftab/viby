@@ -110,8 +110,8 @@ export default function Login() {
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?
-            <Link to={"/auth/register"} className="underline">
+            Don&apos;t have an account?{" "}
+            <Link to={"/auth/register"} className="underline text-blue-500">
               Sign up
             </Link>
           </div>
