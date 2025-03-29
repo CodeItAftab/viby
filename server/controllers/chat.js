@@ -14,7 +14,6 @@ const {
 
 const getMessages = TryCatch(async (req, res, next) => {
   const { chatId } = req?.params;
-  console.log(chatId);
   const chat = await Chat.findOne({
     _id: chatId,
     members: req?.user?._id,
@@ -171,7 +170,6 @@ const getAllChats = TryCatch(async (req, res, next) => {
       const otherMember = friend.members.find(
         (member) => member._id.toString() !== req.user._id.toString()
       );
-      console.log(otherMember);
       const unreadMessageCount = await Message.countDocuments({
         chatId: friend._id,
         sender: { $ne: req.user._id },
@@ -221,8 +219,6 @@ const getAllChats = TryCatch(async (req, res, next) => {
     message: "Chats fetched successfully",
     chats: sortedChats,
   });
-
-  // console.log(chats);
 });
 
 const LinkPreview = async (req, res, next) => {

@@ -32,7 +32,7 @@ const initSocket = (server) => {
 
   io.on("connection", async (socket) => {
     const { userId } = socket.handshake.query;
-    console.log("New connection: ", socket.id, "\nuserId: ", userId);
+    // console.log("New connection: ", socket.id, "\nuserId: ", userId);
     // push user to active users map
     users.set(userId, socket.id);
 
@@ -42,7 +42,7 @@ const initSocket = (server) => {
     MarkMessagesAsDelivered(chats, userId, users, io);
 
     socket.on("disconnect", () => {
-      console.log(socket.id, " disconnected");
+      // console.log(socket.id, " disconnected");
       NotifyFriendOnlineStatus(socket, chats, userId, users, "offline");
       users.delete(userId);
     });
@@ -50,7 +50,7 @@ const initSocket = (server) => {
     socket.on(READ_MESSAGE, async (data) => {
       const chatId = data.chatId;
       await ReadMessages(chatId, userId, users, io);
-      console.log("readMessages of ", chatId);
+      // console.log("readMessages of ", chatId);
     });
 
     socket.on(TYPING, (data) => {

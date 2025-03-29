@@ -104,8 +104,6 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
 
 const cancelFriendRequest = TryCatch(async (req, res, next) => {
   const { requestId } = req.params;
-  console.log(requestId);
-
   //   Check if the request id is provided
   if (!requestId) {
     throw new ErrorHandler(400, "Request ID is required");

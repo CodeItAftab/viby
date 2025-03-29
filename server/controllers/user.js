@@ -20,8 +20,6 @@ const getAllUsers = async (req, res) => {
         isGroup: false,
       });
 
-      console.log(users);
-
       if (chat) {
         processed_users.push({
           ...user,
@@ -32,7 +30,6 @@ const getAllUsers = async (req, res) => {
           avatar: user?.avatar?.url,
           isOnline: users.has(user._id.toString()),
         });
-        console.log("chat found", chat);
         continue;
       }
 
@@ -55,7 +52,6 @@ const getAllUsers = async (req, res) => {
           avatar: user?.avatar?.url,
         });
 
-        console.log("request found", request);
         continue;
       }
 
