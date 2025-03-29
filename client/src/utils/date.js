@@ -18,7 +18,7 @@ export const getFromattedDate = (date) => {
   }
 };
 
-export const getFromattedTime = (date) => {
+export const getFromattedTime = (date, fullLength = true) => {
   if (!date) {
     console.log("date error", date);
     return "";
@@ -32,7 +32,8 @@ export const getFromattedTime = (date) => {
   } else if (isYesterday(date)) {
     return "Yesterday";
   } else if (differenceInDays(new Date(), date) < 7) {
-    return format(new Date(date), "EEEE");
+    const fd = format(new Date(date), "EEEE");
+    return fullLength ? fd : fd.substring(0, 3);
   } else {
     return format(new Date(date), "dd/MM/yyyy");
   }

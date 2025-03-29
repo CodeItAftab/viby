@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useSocket } from "@/hooks/useSocket";
 import { markMessageReadByViewer } from "@/redux/slices/chat";
 import { READ_MESSAGE } from "@/constants/event";
+// import { LoaderCircleIcon } from "lucide-react";
 
 const formatMessages = (messages) => {
   const processedMessages = [];
@@ -15,15 +16,15 @@ const formatMessages = (messages) => {
 
   for (let i = 0; i < messages.length; i++) {
     const message = { ...messages[i] }; // Clone to avoid modifying original
-    const messageDate = new Date(message?.createdAt).toDateString(); // Convert to date string (YYYY-MM-DD)
+    const messageDate =
+      message?.createdAt && new Date(message?.createdAt).toDateString(); // Convert to date string (YYYY-MM-DD)
 
     // Check if this message has the same sender and was sent on the same date as the last message
     message.sameSender =
       lastSender === message.sender && lastMessageDate === messageDate;
 
     // Push date separator if it's a new day
-    if (messageDate && lastMessageDate && lastMessageDate !== messageDate) {
-      console.log("date in format message func", messageDate, lastMessageDate);
+    if (lastMessageDate !== messageDate) {
       processedMessages.push({
         type: "date",
         date: messageDate || undefined,
@@ -66,6 +67,10 @@ function MessageList({ messages = [] }) {
           <MessageItem key={message?._id ?? index} message={message} />
         ))}
     </ul>
+    // <div className="w-full h-[calc(100%-120px)] flex justify-center pt-8">
+    //   {/* Loading... */}
+    //   <LoaderCircleIcon className="animate-spin" size={32} />
+    // </div>
   );
 }
 

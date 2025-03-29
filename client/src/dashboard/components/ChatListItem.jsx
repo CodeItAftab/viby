@@ -105,7 +105,7 @@ export function ChatListItem({ chat }) {
             chat.lastMessage !== undefined &&
             chat?.lastMessage &&
             chat?.lastMessage?.createdAt &&
-            getFromattedTime(new Date(chat?.lastMessage?.createdAt))}
+            getFromattedTime(new Date(chat?.lastMessage?.createdAt), false)}
           {/* {faker.number.int({ min: 1, max: 12 })}:
           {faker.number.int({ min: 1, max: 12 })} */}
           {/* {new Date(chat?.lastMessage?.createdAt)?.toLocaleTimeString()} */}
