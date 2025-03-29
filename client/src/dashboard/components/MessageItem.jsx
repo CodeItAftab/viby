@@ -33,7 +33,7 @@ const MessageItem = forwardRef(function MessageItem({ message }, ref) {
     case "media":
       return <ImageMessage message={message} />;
     case "date":
-      return <DateStamp date={message.date} ref={ref} />;
+      return <DateStamp date={message?.date} ref={ref} />;
   }
 });
 

@@ -23,9 +23,10 @@ const formatMessages = (messages) => {
 
     // Push date separator if it's a new day
     if (messageDate && lastMessageDate !== messageDate) {
+      console.log("date in format message func", messageDate, lastMessageDate);
       processedMessages.push({
         type: "date",
-        date: messageDate,
+        date: messageDate || undefined,
       });
     }
 
