@@ -24,7 +24,7 @@ const formatMessages = (messages) => {
       lastSender === message.sender && lastMessageDate === messageDate;
 
     // Push date separator if it's a new day
-    if (lastMessageDate !== messageDate) {
+    if (messageDate && lastMessageDate !== messageDate) {
       processedMessages.push({
         type: "date",
         date: messageDate || undefined,
