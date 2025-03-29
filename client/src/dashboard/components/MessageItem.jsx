@@ -551,6 +551,7 @@ export const LinkMessage = () => {
 };
 
 const DateStamp = forwardRef(function DateStamp({ date }, ref) {
+  console.log("date:=", date);
   return (
     <li
       className="date-stamp my-8 shrink-0 flex justify-center items-center w-full h-4 gap-2"
