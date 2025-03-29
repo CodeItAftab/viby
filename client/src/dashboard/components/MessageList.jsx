@@ -15,14 +15,14 @@ const formatMessages = (messages) => {
 
   for (let i = 0; i < messages.length; i++) {
     const message = { ...messages[i] }; // Clone to avoid modifying original
-    const messageDate = new Date(message.createdAt).toDateString(); // Convert to date string (YYYY-MM-DD)
+    const messageDate = new Date(message?.createdAt).toDateString(); // Convert to date string (YYYY-MM-DD)
 
     // Check if this message has the same sender and was sent on the same date as the last message
     message.sameSender =
       lastSender === message.sender && lastMessageDate === messageDate;
 
     // Push date separator if it's a new day
-    if (lastMessageDate !== messageDate) {
+    if (messageDate && lastMessageDate !== messageDate) {
       processedMessages.push({
         type: "date",
         date: messageDate,

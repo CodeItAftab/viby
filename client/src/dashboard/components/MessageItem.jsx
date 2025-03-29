@@ -129,11 +129,12 @@ const TextMessage = ({ message }) => {
       >
         <div className="h-full  w-full flex items-center justify-center pr-1 gap-1 flex-shrink-0">
           <span className="text-[10px] relative ">
-            {new Date(message?.createdAt).toLocaleString("en-US", {
-              hour: "numeric",
-              minute: "numeric",
-              hour12: true,
-            })}
+            {message?.createdAt &&
+              new Date(message?.createdAt).toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              })}
           </span>
           {message?.isSender && (
             <span className="flex items-center justify-center">
@@ -332,11 +333,12 @@ const ImageMessage = ({ message }) => {
               <span className="absolute inline-block bottom-1 right-0 h-5 w-[72px]">
                 <div className="h-full w-full flex items-center justify-center pr-1 gap-1 flex-shrink-0">
                   <span className="text-[10px] text-white relative">
-                    {new Date(message?.createdAt).toLocaleString("en-US", {
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    })}
+                    {message?.createdAt &&
+                      new Date(message?.createdAt).toLocaleString("en-US", {
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: true,
+                      })}
                   </span>
                   {message?.isSender && (
                     <span className="flex items-center justify-center">
@@ -554,11 +556,11 @@ const DateStamp = forwardRef(function DateStamp({ date }, ref) {
       className="date-stamp my-8 shrink-0 flex justify-center items-center w-full h-4 gap-2"
       ref={ref}
     >
-      <div className="h-[1px] border-[1px] w-[40%] bg-slate-200"></div>
+      <div className="h-[1px] border-[1px] sm:w-[20%] w-[40%] bg-slate-200"></div>
       <span className="date-stamp-text text-[12px] leading-none bg-slate-200 font-semibold w-20  text-slate-900 h-6 flex items-center justify-center  px-2 rounded-sm">
-        {getFromattedDate(date)}
+        {date && getFromattedDate(new Date(date))}
       </span>
-      <div className="h-[1px] border-[1px] w-[40%] bg-slate-200"></div>
+      <div className="h-[1px] border-[1px]  sm:w-[20%] w-[40%] bg-slate-200"></div>
     </li>
   );
 });
