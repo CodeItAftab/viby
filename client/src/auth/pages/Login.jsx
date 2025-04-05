@@ -5,9 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { LoginUser } from "@/redux/slices/auth";
-import { Loader2 } from "lucide-react";
+// import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 
 const schema = z.object({
@@ -23,7 +23,7 @@ export default function Login() {
     formState: { errors },
   } = form;
 
-  const { isLoading } = useSelector((state) => state.auth);
+  // const { isLoading } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -102,11 +102,12 @@ export default function Login() {
             </Link>
             <Button
               type="submit"
-              disabled={isLoading}
+              // disabled={isLoading}
               className="w-full h-11 flex items-center justify-center gap-2"
             >
-              {isLoading && <Loader2 className="animate-spin" />}
-              {isLoading ? "Please wait" : "Login"}
+              {/* {isLoading && <Loader2 className="animate-spin" />} */}
+              {/* {isLoading ? "Please wait" : "Login"} */}
+              Login
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">

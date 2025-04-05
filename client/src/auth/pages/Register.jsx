@@ -5,14 +5,14 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RegisterUser } from "@/redux/slices/auth";
-import { Loader2 } from "lucide-react";
+// import { Loader2 } from "lucide-react";
 
 export default function Register() {
   const [data, setData] = useState({ name: "", email: "", password: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLoading } = useSelector((state) => state.auth);
+  // const { isLoading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     document.title = "Register | Viby Chat";
@@ -91,9 +91,10 @@ export default function Register() {
               />
             </div>
 
-            <Button disabled={isLoading} type="submit" className="w-full h-11">
-              {isLoading && <Loader2 className="animate-spin" />}
-              {isLoading ? "Please wait" : "Register"}
+            <Button type="submit" className="w-full h-11">
+              {/* {isLoading && <Loader2 className="animate-spin" />} */}
+              {/* {isLoading ? "Please wait" : "Register"} */}
+              Register
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
