@@ -79,10 +79,11 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
   const receiver = await User.findById(to, "name fcm_tokens").lean();
 
   //   Send a notification to the receiver
-  const token = receiver?.fcm_tokens?.[0]?.token;
-  if (token) {
-    const r = await sendNotification(token);
-    console.log("Notification sent:=>", r);
+  for (let token of receiver?.fcm_tokens) {
+    if (token && token.token) {
+      const r = await sendNotification(token?.token);
+      console.log("Notification sent:=>", r);
+    }
   }
 
   //   Emit the FRIEND_REQUEST_SENT event to the sender
