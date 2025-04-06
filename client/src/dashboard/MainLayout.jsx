@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import BottomNavbar from "./components/BottomNavbar";
 import { SocketProvider } from "@/context/SocketContext";
 import CreateGroupModal from "./components/CreateGroupModal";
+import NotificationSheet from "./components/NotificationSheet";
 
 function MainLayout() {
   const { isLoggedIn, isFirstLogin } = useSelector((state) => state.auth);
@@ -26,6 +27,7 @@ function MainLayout() {
         <BottomNavbar />
       </div>
       <CreateGroupModal />
+      <NotificationSheet />
     </SocketProvider>
   );
 }

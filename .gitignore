@@ -5,5 +5,3 @@ server/node_modules
 server/.env
 package-lock.json
 firebaseSDk.json
-/firebase
-firebase.js

@@ -1,12 +1,12 @@
 import { memo, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 import MessageItem from "./MessageItem";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useSocket } from "@/hooks/useSocket";
 import { markMessageReadByViewer } from "@/redux/slices/chat";
 import { READ_MESSAGE } from "@/constants/event";
-// import { LoaderCircleIcon } from "lucide-react";
+import { LoaderCircleIcon } from "lucide-react";
 
 const formatMessages = (messages) => {
   const processedMessages = [];
@@ -46,6 +46,7 @@ function MessageList({ messages = [] }) {
   const dispatch = useDispatch();
   const { chatId } = useParams();
   const socket = useSocket();
+  const { isLoading } = useSelector((state) => state.app);
 
   const handleReadMessage = useCallback(() => {
     dispatch(markMessageReadByViewer({ chatId }));
@@ -57,20 +58,25 @@ function MessageList({ messages = [] }) {
   }, [handleReadMessage, socket]);
 
   return (
-    <ul
-      // ref={chatListRef}
-      className="messages-box  w-full h-[calc(100%-120px)] flex-grow px-3 py-4 flex flex-col-reverse  gap-[2px]  overflow-auto bg-white  "
-    >
-      {formatMessages(messages)
-        .reverse()
-        .map((message, index) => (
-          <MessageItem key={message?._id ?? index} message={message} />
-        ))}
-    </ul>
-    // <div className="w-full h-[calc(100%-120px)] flex justify-center pt-8">
-    //   {/* Loading... */}
-    //   <LoaderCircleIcon className="animate-spin" size={32} />
-    // </div>
+    <>
+      {!isLoading && (
+        <ul
+          // ref={chatListRef}
+          className="messages-box  w-full h-[calc(100%-120px)] flex-grow px-3 py-4 flex flex-col-reverse  gap-[2px]  overflow-auto bg-white  "
+        >
+          {formatMessages(messages)
+            .reverse()
+            .map((message, index) => (
+              <MessageItem key={message?._id ?? index} message={message} />
+            ))}
+        </ul>
+      )}
+      {isLoading && (
+        <div className="w-full h-[calc(100%-120px)] flex justify-center pt-8">
+          <LoaderCircleIcon className="animate-spin" size={32} />
+        </div>
+      )}
+    </>
   );
 }
 

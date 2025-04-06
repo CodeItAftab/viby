@@ -10,6 +10,7 @@ const {
   uploadOnCloudinary,
   uploadAvatarOnCloudinary,
 } = require("../utils/cloudinary");
+const { SendNewMessageNotification } = require("../utils/notification");
 // const { default: NotificationService } = require("../utils/notification");
 
 const getMessages = TryCatch(async (req, res, next) => {
@@ -140,6 +141,23 @@ const sendMessage = TryCatch(async (req, res, next) => {
   io.to(socketId).emit(MESSAGE_SENT, {
     message: messageForRealTime,
   });
+
+  // * Temporary code to send notification to the receiver
+  const receiver = await User.findById(
+    otherMembers[0],
+    "name fcm_tokens"
+  ).lean();
+  const token = receiver?.fcm_tokens?.[0]?.token;
+  if (token) {
+    const r = await SendNewMessageNotification(
+      token,
+      chatId,
+      messageForRealTime,
+      req.user?.avatar?.url
+    );
+    console.log("Notification sent:=>", r);
+  }
+  // * End of temporary code
 
   res.json({
     success: true,

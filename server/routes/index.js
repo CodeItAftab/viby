@@ -4,6 +4,7 @@ const authRoutes = require("./auth");
 const userRoutes = require("./user");
 const chatRoutes = require("./chat");
 const requestRoutes = require("./request");
+const notificationRoutes = require("./notification");
 const { errorMiddleware } = require("../middlewares/error");
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.use(
 router.use("/user", userRoutes);
 router.use("/chat", chatRoutes);
 router.use("/request", requestRoutes);
+router.use("/notification", notificationRoutes);
 
 router.get("/", (req, res) => {
   res.json({ message: "Welcome to the server" });

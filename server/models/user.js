@@ -41,10 +41,16 @@ const schema = new Schema(
       type: Date,
       select: false,
     },
-    fcm_token: {
-      type: String,
-      select: false,
-    },
+    fcm_tokens: [
+      {
+        user_agent: {
+          type: String,
+        },
+        token: {
+          type: String,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
