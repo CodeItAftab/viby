@@ -23,7 +23,6 @@ const SendNewFriendRequestNotification = async (
       title: `New Friend Request`,
       body: `You have a new friend request from ${sender_name}`,
       image: sender_avatar?.url, // Ensure it's a string
-      tag: "friend_request",
     },
     data: {
       type: "friend_request",
