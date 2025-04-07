@@ -21,25 +21,19 @@ const messaging = getMessaging(app);
 const GenerateFCMToken = async () => {
   try {
     const token = await getToken(messaging, { vapidKey });
-    console.log("FCM Token: ", token);
+    // console.log("FCM Token: ", token);
     return token;
   } catch (error) {
     console.error("Error getting FCM token: ", error);
   }
 };
 
-const UpdateFCMTokenToServer = async (token) => {
-  const userAgent = navigator.userAgent;
-  const tokenData = {
-    token: token,
-    userAgent: userAgent,
-  };
-
+const UpdateFCMTokenToServer = async (tokenData) => {
   try {
     const response = await postRequest("/notification/update-fcm-token", {
       tokenData,
     });
-    console.log("FCM token updated successfully: ", response.data);
+    console.log("FCM token updated successfully: ", response?.data, response);
   } catch (error) {
     console.error("Error updating FCM token: ", error);
   }

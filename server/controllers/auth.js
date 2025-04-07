@@ -3,11 +3,10 @@ const User = require("../models/user");
 const { getNewOtp, compareHashedData, sendToken } = require("../utils/helper");
 const { hashSync } = require("bcrypt");
 const { sendEmail } = require("../utils/mailer");
+const { UserToFCMToken } = require("./notification");
 
 const register = TryCatch(async (req, res, next) => {
   const { name, email, password } = req.body;
-  // console.log(name, email, password);
-
   const existing_user = await User.findOne({ email }).select("+verified");
   if (existing_user && existing_user.verified) {
     return new ErrorHandler(400, "User already exists");
@@ -33,8 +32,6 @@ const sendOTP = TryCatch(async (req, res, next) => {
   const hashed_otp = hashSync(otp, 10);
 
   const expiry_time = Date.now() + 10 * 60 * 1000; // 10 minutes
-  // console.log(expiry_time);
-
   const user = await User.findByIdAndUpdate(
     userId,
     {
@@ -111,6 +108,27 @@ const login = TryCatch(async (req, res, next) => {
 });
 
 const logout = TryCatch(async (req, res, next) => {
+  const { browserId } = req.body;
+  if (browserId) {
+    // Remove the browserId from the user's fcm_tokens array
+    const userFCMTokens = UserToFCMToken[req.user._id];
+    if (userFCMTokens) {
+      const tokenIndex = userFCMTokens.findIndex(
+        (tokenData) => tokenData.browserId === browserId
+      );
+      if (tokenIndex !== -1) {
+        userFCMTokens.splice(tokenIndex, 1);
+        // If the user has no more tokens, delete the entry from UserToFCMToken
+
+        if (userFCMTokens.length === 0) {
+          delete UserToFCMToken[req.user._id];
+        }
+      }
+    }
+  }
+
+  // console.log("UserToFCMToken", UserToFCMToken);
+
   res
     .status(200)
     .cookie("vib-token", "", {

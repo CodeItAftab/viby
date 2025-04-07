@@ -10,7 +10,11 @@ const Chat = require("../models/chat");
 const User = require("../models/user");
 const { TryCatch, ErrorHandler } = require("../utils/error");
 const { getIO, users, getSocketId } = require("../utils/socket");
-const { sendNotification } = require("../utils/notification");
+const {
+  sendNotification,
+  SendNewFriendRequestNotification,
+} = require("../utils/notification");
+const { UserToFCMToken } = require("./notification");
 
 const sendFriendRequest = TryCatch(async (req, res, next) => {
   const { to } = req.body;
@@ -79,26 +83,22 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
   const receiver = await User.findById(to, "name fcm_tokens").lean();
 
   //   Send a notification to the receiver
-  const token = receiver?.fcm_tokens?.[0]?.token;
-  if (token) {
-    const r = await sendNotification(token);
-    console.log("Notification sent:=>", r);
+  const sender_name = req?.user?.name;
+  const requestId = request._id;
+  const sender_avatar = req?.user?.avatar?.url;
+  const receiver_fcm_tokens = UserToFCMToken[to.toString()];
+  if (receiver_fcm_tokens) {
+    receiver_fcm_tokens.forEach((tokenData) => {
+      const token = tokenData.token;
+      SendNewFriendRequestNotification(
+        token,
+        requestId,
+        sender_name,
+        sender_avatar
+      );
+    });
   }
 
-  //   Emit the FRIEND_REQUEST_SENT event to the sender
-
-  //   io.to(userSocketId).emit(FRIEND_REQUEST_SENT, {
-  //     message: "Friend Request Sent",
-  //     request: {
-  //       _id: old_requset._id,
-  //       receiver: {
-  //         ...old_requset.receiver,
-  //         avatar: old_requset?.receiver?.avatar?.url,
-  //       },
-  //     },
-  //   });
-
-  //   Send a success response
   return res.status(200).json({
     success: true,
     message: "Friend request sent",

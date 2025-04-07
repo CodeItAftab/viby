@@ -43,7 +43,7 @@ const schema = new Schema(
     },
     fcm_tokens: [
       {
-        user_agent: {
+        browserId: {
           type: String,
         },
         token: {

@@ -9,7 +9,7 @@ const isAuthenticated = TryCatch(async (req, res, next) => {
   }
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const user = await User.findById(decoded._id).select("+fcm_token");
+  const user = await User.findById(decoded._id).select("+fcm_token +avatar");
   req.user = user;
   next();
 });

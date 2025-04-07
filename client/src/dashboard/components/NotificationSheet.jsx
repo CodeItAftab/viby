@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -8,20 +8,8 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { GenerateFCMToken, UpdateFCMTokenToServer } from "@/lib/firebase";
-import { useSelector } from "react-redux";
-
 function NotificationSheet() {
   const [open, setOpen] = useState(false);
-
-  const { user } = useSelector((state) => state.user);
-
-  const tokens = user?.fcm_tokens || [];
-
-  const existingTokenIndex = tokens.findIndex((fcmToken) => {
-    return fcmToken.user_agent === window.navigator.userAgent;
-  });
-
-  const existingToken = tokens[existingTokenIndex]?.token || null;
 
   const shouldAsk = useCallback(() => {
     const lastPrompt = window.localStorage.getItem("lastNotificationPrompt");
@@ -36,79 +24,75 @@ function NotificationSheet() {
     return diffInDays >= 7;
   }, []);
 
+  const updateFCMToken = useCallback(async () => {
+    // check if the user has already granted permission
+    let browserId = window.localStorage.getItem("browserId");
+    if (!browserId) {
+      browserId = crypto.randomUUID();
+      window.localStorage.setItem("browserId", browserId);
+    }
+    const permission = Notification.permission;
+    if (permission === "granted") {
+      console.log("✅Permission already granted");
+      // Generate FCM token and send it to the server
+      const token = await GenerateFCMToken();
+      UpdateFCMTokenToServer({ token, browserId });
+      return;
+    }
+  }, []);
+
+  const requestNotificationPermission = useCallback(async () => {
+    if (!shouldAsk()) return;
+    const permission = Notification.permission;
+    if (permission === "granted") {
+      console.log("✅Permission already granted");
+      return;
+    } else if (permission === "default") {
+      const newPermission = await Notification.requestPermission();
+      if (newPermission === "granted") {
+        console.log("✅Permission granted");
+        setOpen(false);
+        window.localStorage.setItem("lastNotificationPrompt", new Date());
+        updateFCMToken();
+      } else {
+        console.log("❌Permission denied");
+        setOpen(false);
+      }
+    } else if (permission === "denied") {
+      console.log("❌Permission denied");
+      alert(
+        "Please enable notifications in your browser settings to receive updates."
+      );
+      setOpen(false);
+    }
+  }, [updateFCMToken, shouldAsk]);
+
+  useEffect(() => {
+    updateFCMToken();
+  }, [updateFCMToken]);
+
+  useEffect(() => {
+    //this will hanle the notification permission dialog when the user is logged in or once whe should ask is true
+    const permission = Notification.permission;
+
+    if ((permission === "default" || permission === "denied") && shouldAsk()) {
+      setOpen(true);
+    }
+  }, [shouldAsk]);
+
   const handleCancle = useCallback(() => {
+    console.log("cancelled...");
+    window.localStorage.setItem("lastNotificationPrompt", new Date());
+    window.localStorage.removeItem("browserId");
     setOpen(false);
   }, []);
 
   const handleChangeOpen = useCallback(() => {
     console.log("closedd...");
+    window.localStorage.setItem("lastNotificationPrompt", new Date());
+    window.localStorage.removeItem("browserId");
     setOpen((prev) => !prev);
   }, []);
-
-  const requestNotificationPermission = useCallback(async () => {
-    if (!("Notification" in window)) return;
-
-    if (shouldAsk()) {
-      localStorage.setItem("lastNotificationPrompt", new Date().toISOString());
-
-      if (Notification.permission === "default") {
-        const permission = await Notification.requestPermission();
-        if (permission === "granted") {
-          console.log("✅ Notification permission granted.");
-          const token = await GenerateFCMToken();
-          if (token) {
-            UpdateFCMTokenToServer(token);
-            return setOpen(false);
-          }
-        } else {
-          console.warn("❌ Notification permission denied.");
-          // Optionally show your modal here
-          alert(
-            "Notifications are disabled. To enable them, go to your browser settings."
-          );
-
-          return setOpen(false);
-        }
-      } else if (Notification.permission === "denied") {
-        // User has denied — show a reminder or guide
-        alert(
-          "Notifications are currently blocked. You can enable them from your browser settings."
-        );
-
-        return setOpen(false);
-      } else if (Notification.permission === "granted" && !existingToken) {
-        // User has already granted permission — check for token
-        const token = await GenerateFCMToken();
-        if (token) {
-          UpdateFCMTokenToServer(token);
-          return setOpen(false);
-        }
-      }
-    }
-  }, [existingToken, shouldAsk]);
-
-  // ✅ Trigger modal only when user is logged in
-  const timeOutRef = useRef(null);
-
-  useEffect(() => {
-    shouldAsk();
-
-    if (
-      (Notification.permission === "default" ||
-        Notification.permission === "denied" ||
-        (Notification.permission === "granted" && !existingToken)) &&
-      shouldAsk()
-    ) {
-      timeOutRef.current = setTimeout(() => {
-        setOpen(true);
-      }, 2000);
-    }
-
-    return () => {
-      clearTimeout(timeOutRef?.current);
-      setOpen(false);
-    };
-  }, [existingToken, shouldAsk]);
 
   return (
     <Sheet open={open} onOpenChange={handleChangeOpen}>

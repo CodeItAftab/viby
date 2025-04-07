@@ -1,0 +1,147 @@
+import { useCallback, useState } from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+// import { GenerateFCMToken, UpdateFCMTokenToServer } from "@/lib/firebase";
+// import { useSelector } from "react-redux";
+
+function NotificationSheet() {
+  const [open, setOpen] = useState(true);
+
+  // const { user } = useSelector((state) => state.user);
+
+  // const tokens = user?.fcm_tokens || [];
+
+  // const existingTokenIndex = tokens.findIndex((fcmToken) => {
+  //   return fcmToken.user_agent === window.navigator.userAgent;
+  // });
+
+  // const existingToken = tokens[existingTokenIndex]?.token || null;
+
+  // const shouldAsk = useCallback(() => {
+  //   const lastPrompt = window.localStorage.getItem("lastNotificationPrompt");
+  //   if (!lastPrompt) return true;
+
+  //   const lastDate = new Date(lastPrompt);
+  //   const now = new Date();
+
+  //   const diffInMs = now - lastDate;
+  //   const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+  //   return diffInDays >= 7;
+  // }, []);
+
+  const handleCancle = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const handleChangeOpen = useCallback(() => {
+    console.log("closedd...");
+    setOpen((prev) => !prev);
+  }, []);
+
+  // const requestNotificationPermission = useCallback(async () => {
+  //   if (!("Notification" in window)) return;
+
+  //   if (shouldAsk()) {
+  //     localStorage.setItem("lastNotificationPrompt", new Date().toISOString());
+
+  //     if (Notification.permission === "default") {
+  //       const permission = await Notification.requestPermission();
+  //       if (permission === "granted") {
+  //         console.log("✅ Notification permission granted.");
+  //         const token = await GenerateFCMToken();
+  //         if (token) {
+  //           UpdateFCMTokenToServer(token);
+  //           return setOpen(false);
+  //         }
+  //       } else {
+  //         console.warn("❌ Notification permission denied.");
+  //         // Optionally show your modal here
+  //         alert(
+  //           "Notifications are disabled. To enable them, go to your browser settings."
+  //         );
+
+  //         return setOpen(false);
+  //       }
+  //     } else if (Notification.permission === "denied") {
+  //       // User has denied — show a reminder or guide
+  //       alert(
+  //         "Notifications are currently blocked. You can enable them from your browser settings."
+  //       );
+
+  //       return setOpen(false);
+  //     } else if (Notification.permission === "granted" && !existingToken) {
+  //       // User has already granted permission — check for token
+  //       const token = await GenerateFCMToken();
+  //       if (token) {
+  //         UpdateFCMTokenToServer(token);
+  //         return setOpen(false);
+  //       }
+  //     }
+  //   }
+  // }, [existingToken, shouldAsk]);
+
+  // ✅ Trigger modal only when user is logged in
+
+  // const timeOutRef = useRef(null);
+
+  // useEffect(() => {
+  //   if (
+  //     (Notification.permission === "default" ||
+  //       Notification.permission === "denied" ||
+  //       (Notification.permission === "granted" && !existingToken)) &&
+  //     shouldAsk()
+  //   ) {
+  //     timeOutRef.current = setTimeout(() => {
+  //       setOpen(true);
+  //     }, 2000);
+  //   }
+
+  //   return () => {
+  //     clearTimeout(timeOutRef?.current);
+  //     setOpen(false);
+  //   };
+  // }, [existingToken, shouldAsk]);
+
+  return (
+    <Sheet open={open} onOpenChange={handleChangeOpen}>
+      <SheetContent showClose={false} side="bottom" className="p-8 pt-4">
+        <SheetHeader className={"hidden"}>
+          <SheetTitle>Push Notifications</SheetTitle>
+          <SheetDescription>
+            We’d love to keep you updated! Enable notifications to get alerts
+            when you receive new messages — even when you&apos;re not on this
+            page.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="flex flex-col items-start gap-2 mb-4 py-4">
+          <h1 className="text-xl font-semibold">Push Notifications</h1>
+          <p>
+            We’d love to keep you updated! Enable notifications to get alerts
+            when you receive new messages — even when you&apos;re not on this
+            page.
+          </p>
+        </div>
+        <div className=" flex gap-5 items-center sm:justify-start justify-center">
+          <Button className="w-36" variant="outline" onClick={handleCancle}>
+            Cancel
+          </Button>
+          <Button
+            className="w-36"
+            //  onClick={requestNotificationPermission}
+          >
+            Allow
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+export default NotificationSheet;

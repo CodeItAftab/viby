@@ -1,4 +1,4 @@
-import { getRequest, postRequest } from "@/lib/axios";
+import { postRequest } from "@/lib/axios";
 import { toast } from "react-hot-toast";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
@@ -62,9 +62,12 @@ export const LogoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (_, { dispatch }) => {
     try {
-      const response = await getRequest("/auth/logout");
+      const browserId = window.localStorage.getItem("browserId");
+      const response = await postRequest("/auth/logout", { browserId });
       if (response?.success) {
         window.localStorage.removeItem("reload");
+        window.localStorage.removeItem("browserId");
+        window.localStorage.removeItem("lastNotificationPrompt");
         dispatch(resetUserSlice());
         dispatch(slice.actions.logout());
         dispatch(resetChatSlice());
