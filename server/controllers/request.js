@@ -11,10 +11,11 @@ const User = require("../models/user");
 const { TryCatch, ErrorHandler } = require("../utils/error");
 const { getIO, users, getSocketId } = require("../utils/socket");
 const {
-  sendNotification,
   SendNewFriendRequestNotification,
+  SendFriendRequestAcceptedNotification,
 } = require("../utils/notification");
 const { UserToFCMToken } = require("./notification");
+const { GetTransformedURL } = require("../utils/cloudinary");
 
 const sendFriendRequest = TryCatch(async (req, res, next) => {
   const { to } = req.body;
@@ -85,7 +86,7 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
   //   Send a notification to the receiver
   const sender_name = req?.user?.name;
   const requestId = request._id;
-  const sender_avatar = req?.user?.avatar?.url;
+  const sender_avatar = GetTransformedURL(req?.user?.avatar?.url);
   const receiver_fcm_tokens = UserToFCMToken[to.toString()];
   if (receiver_fcm_tokens) {
     receiver_fcm_tokens.forEach((tokenData) => {
@@ -219,6 +220,23 @@ const acceptFriendRequest = TryCatch(async (req, res, next) => {
       isOnline: users.has(request.receiver.toString()),
     },
   });
+
+  //  Send a notification to the
+  const chatId = chat._id;
+  const receiver_name = receiverFriend.name;
+  const receiver_avatar = GetTransformedURL(receiverFriend?.avatar?.url);
+  const sender_fcm_tokens = UserToFCMToken[request.sender.toString()];
+  if (sender_fcm_tokens) {
+    sender_fcm_tokens.forEach((tokenData) => {
+      const token = tokenData.token;
+      SendFriendRequestAcceptedNotification(
+        token,
+        chatId,
+        receiver_name,
+        receiver_avatar
+      );
+    });
+  }
 
   //   Send a success response
   return res.status(200).json({

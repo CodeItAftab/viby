@@ -9,8 +9,10 @@ const { getLinkPreview } = require("link-preview-js");
 const {
   uploadOnCloudinary,
   uploadAvatarOnCloudinary,
+  GetTransformedURL,
 } = require("../utils/cloudinary");
 const { SendNewMessageNotification } = require("../utils/notification");
+const { UserToFCMToken } = require("./notification");
 // const { default: NotificationService } = require("../utils/notification");
 
 const getMessages = TryCatch(async (req, res, next) => {
@@ -142,22 +144,39 @@ const sendMessage = TryCatch(async (req, res, next) => {
     message: messageForRealTime,
   });
 
-  // * Temporary code to send notification to the receiver
-  const receiver = await User.findById(
-    otherMembers[0],
-    "name fcm_tokens"
-  ).lean();
-  const token = receiver?.fcm_tokens?.[0]?.token;
-  if (token) {
-    const r = await SendNewMessageNotification(
-      token,
-      chatId,
-      messageForRealTime,
-      req.user?.avatar?.url
-    );
-    console.log("Notification sent:=>", r);
-  }
-  // * End of temporary code
+  // Send notification to the other members
+  otherMembers.forEach(async (member) => {
+    // check if member is sender then return
+    if (member.toString() === req.user._id.toString()) {
+      return;
+    }
+    // Now find out the fcm token of the member from UserToFCMToken object
+    const memberFCMToken = UserToFCMToken[member.toString()];
+    const chatId = savedMessage.chatId;
+    const sender_name = req?.user?.name;
+    const sender_avatar =
+      req?.user?.avatar && GetTransformedURL(req?.user?.avatar?.url);
+    const message =
+      savedMessage?.type === "text"
+        ? content
+        : savedMessage?.attachments[0]?.url;
+    const message_type =
+      savedMessage?.type === "text" ? "text" : savedMessage?.type;
+    // send notification to each fcm token
+    if (memberFCMToken) {
+      memberFCMToken.forEach((tokenData) => {
+        const token = tokenData.token;
+        SendNewMessageNotification(
+          token,
+          chatId,
+          sender_name,
+          sender_avatar,
+          message,
+          message_type
+        );
+      });
+    }
+  });
 
   res.json({
     success: true,

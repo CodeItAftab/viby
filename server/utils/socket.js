@@ -1,16 +1,7 @@
 const { Server } = require("socket.io");
-const {
-  FRIEND_CAME_ONLINE,
-  FRIEND_WENT_OFFLINE,
-  MESSAGE_DELIVERED,
-  READ_MESSAGE,
-  FRIEND_READ_MESSAGE,
-  TYPING,
-  STOP_TYPING,
-} = require("../constants/event");
+const { READ_MESSAGE, TYPING, STOP_TYPING } = require("../constants/event");
 const Request = require("../models/request");
 const Chat = require("../models/chat");
-const Message = require("../models/Message");
 const {
   MarkMessagesAsDelivered,
   NotifyFriendOnlineStatus,
