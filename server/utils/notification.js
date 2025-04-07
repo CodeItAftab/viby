@@ -17,14 +17,17 @@ const SendNewFriendRequestNotification = async (
   sender_name,
   sender_avatar
 ) => {
+  // add click_action to the payload to redirect to friend requests page
   const payload = {
     notification: {
-      title: `${sender_name} sent you a friend request`,
+      title: `New Friend Request`,
       body: `You have a new friend request from ${sender_name}`,
       image: sender_avatar?.url, // Ensure it's a string
+      tag: "friend_request",
     },
     data: {
       type: "friend_request",
+      tag: "friend_request",
       friendId: String(requestId), // Convert to string
       sender_name: String(sender_name), // Ensure it's a string
       sender_avatar: String(sender_avatar), // Ensure it's a string
