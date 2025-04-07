@@ -7,7 +7,7 @@ const SendNotification = async (payload) => {
     return response;
   } catch (error) {
     console.error("❌ Error sending notification:", error);
-    throw error;
+    // throw error;
   }
 };
 
@@ -22,14 +22,22 @@ const SendNewFriendRequestNotification = async (
     notification: {
       title: `New Friend Request`,
       body: `You have a new friend request from ${sender_name}`,
-      image: sender_avatar?.url, // Ensure it's a string
+      image: sender_avatar, // Ensure it's a string
     },
     data: {
       type: "friend_request",
       tag: "friend_request",
-      friendId: String(requestId), // Convert to string
+      title: `New Friend Request`,
+      body: `You have a new friend request from ${sender_name}`,
+      requestId: String(requestId), // Convert to string
       sender_name: String(sender_name), // Ensure it's a string
-      sender_avatar: String(sender_avatar), // Ensure it's a string
+      image: String(sender_avatar), // Ensure it's a string
+      actions: JSON.stringify([
+        {
+          action: "open_url",
+          title: "Open URL",
+        },
+      ]),
     },
     token: token,
   };
