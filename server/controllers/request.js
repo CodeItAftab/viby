@@ -86,7 +86,9 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
   //   Send a notification to the receiver
   const sender_name = req?.user?.name;
   const requestId = request._id;
-  const sender_avatar = GetTransformedURL(req?.user?.avatar?.url);
+  const sender_avatar = req?.user?.avatar
+    ? GetTransformedURL(req?.user?.avatar?.url)
+    : undefined;
   const receiver_fcm_tokens = UserToFCMToken[to.toString()];
   if (receiver_fcm_tokens) {
     receiver_fcm_tokens.forEach((tokenData) => {

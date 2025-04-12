@@ -83,7 +83,7 @@ function GetTransformedURL(url, options = {}) {
   console.log("Transformation String:", transformationString);
 
   // Replace the /upload/ segment with the transformation string
-  return url.replace("/upload/", `/upload/${transformationString}/`);
+  return url?.replace("/upload/", `/upload/${transformationString}/`);
 }
 
 module.exports = {
