@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RegisterUser } from "@/redux/slices/auth";
-// import { Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function Register() {
   const [data, setData] = useState({ name: "", email: "", password: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   // const { isLoading } = useSelector((state) => state.auth);
 
@@ -21,6 +22,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const { payload } = await dispatch(RegisterUser(data));
       console.log(payload);
       if (payload?.success) {
@@ -28,6 +30,8 @@ export default function Register() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,10 +95,10 @@ export default function Register() {
               />
             </div>
 
-            <Button type="submit" className="w-full h-11">
-              {/* {isLoading && <Loader2 className="animate-spin" />} */}
-              {/* {isLoading ? "Please wait" : "Register"} */}
-              Register
+            <Button type="submit" className="w-full h-11" disabled={isLoading}>
+              {isLoading && <Loader2 className="animate-spin" />}
+              {isLoading ? "Please wait" : "Register"}
+              {/* Register */}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
