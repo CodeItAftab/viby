@@ -46,6 +46,7 @@ const initSocket = (server) => {
 
     socket.on(TYPING, async (data) => {
       const chatId = data.chatId;
+      if (!chatId) return;
       const chat = await Chat.findById(chatId);
       if (!chat) return;
       for (const member of chat?.members) {
@@ -58,6 +59,7 @@ const initSocket = (server) => {
     socket.on(STOP_TYPING, async (data) => {
       try {
         const chatId = data?.chatId;
+        if (!chatId) return;
         // const chat = chats.find((chat) => chat._id.toString() === chatId);
         const chat = await Chat.findById(chatId);
         if (!chat) return;

@@ -220,6 +220,7 @@ const acceptFriendRequest = TryCatch(async (req, res, next) => {
       name: receiverFriend.name,
       avatar: receiverFriend?.avatar?.url,
       isOnline: users.has(request.receiver.toString()),
+      chatId: chat._id,
     },
   });
 
@@ -251,6 +252,7 @@ const acceptFriendRequest = TryCatch(async (req, res, next) => {
       name: senderFriend.name,
       avatar: senderFriend?.avatar?.url,
       isOnline: users.has(request.sender.toString()),
+      chatId: chat._id,
     },
   });
 });
@@ -300,10 +302,13 @@ const getAllRequests = TryCatch(async (req, res, next) => {
     .populate("sender", "name avatar")
     .lean();
 
+  // console.log("received request", requests);
+
   // change avatar to avatar.url
   const modifiedRequests = requests.map((request) => {
+    console.log("request", request);
     return {
-      _id: request._id,
+      _id: request?._id,
       sender: {
         _id: request.sender._id,
         name: request.sender.name,
