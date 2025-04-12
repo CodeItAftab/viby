@@ -44,10 +44,10 @@ const initSocket = (server) => {
       // console.log("readMessages of ", chatId);
     });
 
-    socket.on(TYPING, (data) => {
+    socket.on(TYPING, async (data) => {
       const chatId = data.chatId;
-      const chat = chats.find((chat) => chat._id.toString() === chatId);
-
+      const chat = await Chat.findById(chatId);
+      if (!chat) return;
       for (const member of chat?.members) {
         if (member.toString() !== userId) {
           io.to(users.get(member.toString())).emit(TYPING, { chatId, userId });
@@ -55,10 +55,12 @@ const initSocket = (server) => {
       }
     });
 
-    socket.on(STOP_TYPING, (data) => {
+    socket.on(STOP_TYPING, async (data) => {
       try {
         const chatId = data?.chatId;
-        const chat = chats.find((chat) => chat._id.toString() === chatId);
+        // const chat = chats.find((chat) => chat._id.toString() === chatId);
+        const chat = await Chat.findById(chatId);
+        if (!chat) return;
         for (const member of chat?.members) {
           if (member.toString() !== userId) {
             io.to(users.get(member.toString())).emit(STOP_TYPING, {
