@@ -21,7 +21,7 @@ function Search() {
   }, [dispatch]);
 
   return (
-    <div className="h-full w-full bg-white shadow-sm overflow-hidden flex items-center">
+    <div className="lg:h-full h-[calc(100%-52px)] w-full bg-white shadow-sm overflow-hidden flex items-center">
       <div className="h-full lg:w-[360px] w-full lg:bg-slate-100 bg:white flex flex-col items-center shrink-0">
         <header className="w-full px-3 py-4 flex items-center justify-between">
           <h1 className="font-poppins text-xl text-slate-600 font-medium">
@@ -29,7 +29,7 @@ function Search() {
           </h1>
         </header>
         <SearchInput />
-        <ScrollArea className="w-full flex-grow py-3">
+        <ScrollArea className="w-full flex-grow">
           <ul className="w-full px-4 py-2 flex flex-col gap-2 items-center">
             {users?.map((user) => {
               if (user.isFriend)

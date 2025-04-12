@@ -24,7 +24,7 @@ function Requests() {
   };
 
   return (
-    <div className="h-full w-full bg-white  shadow-sm overflow-hidden flex items-center">
+    <div className="lg:h-full h-[calc(100%-52px)] w-full bg-white  shadow-sm overflow-hidden flex items-center">
       <Tabs
         defaultValue="received"
         className="h-full w-full  lg:w-[360px] lg:bg-slate-100 flex flex-col items-center shrink-0"
