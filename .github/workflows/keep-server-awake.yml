@@ -1,0 +1,21 @@
+name: Keep Server Awake
+
+on:
+  schedule:
+    - cron: '0,14,28,42,56 * * * *'  # Every ~14 minutes
+
+jobs:
+  ping-server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+       
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'  # Specify the Node.js version you want to use
+
+      - name: Run Ping Script
+        run: node actions/ping.js
