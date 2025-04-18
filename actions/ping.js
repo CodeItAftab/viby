@@ -1,20 +1,12 @@
-const https = require("https");
-
-https
-  .get("https://viby.onrender.com", (res) => {
-    console.log(`Status Code: ${res.statusCode}`);
-
-    let data = "";
-
-    res.on("data", (chunk) => {
-      data += chunk;
-    });
-
-    res.on("end", () => {
-      console.log("Response Body:", data);
-      process.exit(0); // Clean exit
-    });
+fetch("https://viby.onrender.com")
+  .then((res) => {
+    console.log(`Status Code: ${res.status}`);
+    return res.text(); // Or .json(), depending on what your server returns
   })
-  .on("error", (e) => {
-    console.error(`Error: ${e.message}`);
+  .then((body) => {
+    console.log("Response Body:", body);
+  })
+  .catch((err) => {
+    console.error("Fetch error:", err.message);
+    process.exit(1); // Optional: force exit on error
   });
